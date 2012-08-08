@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+  <div class="page-header">
+    <h1>iNeed</small></h1>
+  </div>
+
+  <div class="row">
+    <div class="span7">
+<h3> What do you need {{ g.user.username }}?</h3>
+<div id="i-need-proxy">
+<table cellspacing='0' cellpadding='0' border="0">
+<tr>
+<td>
+I need
+</td>
+<td><input id="need_text_proxy" type="text" name='need_text_proxy' onfocus='$("#i-need").show();'></td>
+</tr>
+</table>
+</div>
+
+<div id="i-need" class="default-hidden">
+<div class="popover-close-box" id="popover-close-box" onclick="javascript:$('#i-need').hide();"></div>
+<form action="{{ url_for('add_need') }}" method=post>
+<table cellspacing='0' cellpadding='0'>
+<tr>
+<td>
+I need
+</td>
+<td><input id="need_text" type="text" name='need_text'></td>
+</tr>
+<tr>
+<td>Details</td>
+<td><textarea id="need_content" name="need_content" rows="4" cols="40"></textarea></td>
+</tr>
+ 
+<tr>
+<td></td>
+<td>
+<button type='submit' id="submit_need_post">Post Need</button>
+</td>
+</tr>
+</table>
+</form>
+</div>
+<div style="height:50px;">
+</div>
+      <h3>My needs</h3>
+        <ul class=posts>
+        {% for need in needs %}
+          <li>
+              <strong><a href="{{ url_for('user_home', username=need.username) }}">{{ need.username }}</a></strong> 
+              <a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_text }}</a>
+              <small>&mdash; {{ need.need_pub_date|datetimeformat }}</small>
+        {% else %}
+          <li><em>There's no needs so far.</em>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="span7">
+      <h3>Their provides</h3>
+    </div>
+  </div>
+{% endblock %}

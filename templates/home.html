@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>Home</small></h1>
+  </div>
+  <div class="row">
+    {% if request.endpoint == 'public_home' %}
+      <div class="needs-list">
+        <div class="needs-title"><h3>All Needs</h3></div>
+        <div class="needs-zoom"><a href="#" onclick="javascript:showNeeds();">>></a></div>
+        <div class="clear"></div>
+        <ul class=posts>
+        {% for need in needs %}
+          <li>
+              <strong><a href="{{ url_for('user_home', username=need.username) }}">{{ need.username }}</a></strong> 
+              <a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_text }}</a>
+              <small>&mdash; {{ need.need_pub_date|datetimeformat }}</small>
+        {% else %}
+          <li><em>There's no needs so far.</em>
+        {% endfor %}
+        </ul>
+     
+      </div>
+
+      <div class="provides-list">
+        <div class="provides-title"><h3>All Provides</h3></div>
+        <div class="provides-zoom"><a href="#" onclick="javascript:showProvides();"><<</a></div>
+        <div class="clear"></div>
+        <ul class=posts>
+        {% for provide in provides %}
+          <li>
+              <strong><a href="{{ url_for('user_home', username=provide.username) }}">{{ provide.username }}</a></strong> 
+              <a href="{{ url_for('provide_view', provideid=provide.provide_id) }}">{{ provide.provide_text }}</a>
+              <small>&mdash; {{ provide.provide_pub_date|datetimeformat }}</small>
+        {% else %}
+          <li><em>There's no provides so far.</em>
+        {% endfor %}
+        </ul>
+      </div>
+    {% elif request.endpoint == 'user_home' %}
+      <div class="needs-list">
+        <div class="needs-title"><h3>{{ profile_user.username }}'s Needs</h3></div>
+        <div class="needs-zoom"><a href="#" onclick="javascript:showNeeds();">>></a></div>
+        <div class="clear"></div>
+        <ul class=posts>
+        {% for need in needs %}
+          <li>
+              <strong><a href="{{ url_for('user_home', username=need.username) }}">{{ need.username }}</a></strong> 
+              <a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_text }}</a>
+              <small>&mdash; {{ need.need_pub_date|datetimeformat }}</small>
+        {% else %}
+          <li><em>There's no needs so far.</em>
+        {% endfor %}
+        </ul>
+      </div>
+      <div class="provides-list">
+        <div class="provides-title"><h3>{{ profile_user.username }}'s Provides</h3></div>
+        <div class="provides-zoom"><a href="#" onclick="javascript:showProvides();"><<</a></div>
+        <div class="clear"></div>
+        <ul class=posts>
+        {% for provide in provides %}
+          <li>
+              <strong><a href="{{ url_for('user_home', username=provide.username) }}">{{ provide.username }}</a></strong> 
+              <a href="{{ url_for('provide_view', provideid=provide.provide_id) }}">{{ provide.provide_text }}</a>
+              <small>&mdash; {{ provide.provide_pub_date|datetimeformat }}</small>
+        {% else %}
+          <li><em>There's no provides so far.</em>
+        {% endfor %}
+        </ul>
+      </div>
+    {% else %}
+      <div class="needs-list">
+        <div class="needs-title"><h3>My Needs</h3></div>
+        <div class="needs-zoom"><a href="#" onclick="javascript:showNeeds();">>></a></div>
+        <div class="clear"></div>
+        <ul class=posts>
+        {% for need in needs %}
+          <li>
+              <strong><a href="{{ url_for('user_home', username=need.username) }}">{{ need.username }}</a></strong> 
+              <a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_text }}</a>
+              <small>&mdash; {{ need.need_pub_date|datetimeformat }}</small>
+        {% else %}
+          <li><em>There's no needs so far.</em>
+        {% endfor %}
+        </ul>
+      </div>
+      <div class="provides-list">
+        <div class="provides-title"><h3>My Provides</h3></div>
+        <div class="provides-zoom"><a href="#" onclick="javascript:showProvides();"><<</a></div>
+        <div class="clear"></div>
+        <ul class=posts>
+        {% for provide in provides %}
+          <li>
+              <strong><a href="{{ url_for('user_home', username=provide.username) }}">{{ provide.username }}</a></strong> 
+              <a href="{{ url_for('provide_view', provideid=provide.provide_id) }}">{{ provide.provide_text }}</a>
+              <small>&mdash; {{ provide.provide_pub_date|datetimeformat }}</small>
+        {% else %}
+          <li><em>There's no provides so far.</em>
+        {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

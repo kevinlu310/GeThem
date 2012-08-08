@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<table width="100%">
+<tr>
+<td rowspan="3" width="20%">
+<img src="{{ url_for('static',filename='info.png') }}">
+</td>
+<td style="font-size:25px;">{{ need.need_text }}</td>
+</tr>
+<tr>
+<td><h6>{{ need.username }}&mdash; {{ need.need_pub_date|datetimeformat }}</h6></td>
+</tr>
+<tr>
+<td><h4>{{ need.need_content }}</h4></td>
+</tr>
+</table>
+<a href="javascript:history.go(-1);">Back</a>
+
+
+{% endblock %}

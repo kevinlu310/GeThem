@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>iProvide</small></h1>
+  </div>
+  <div class="row">
+    <div class="span7">
+
+<h3> What do you provide {{ g.user.username }}?</h3>
+<div id="i-need-proxy">
+<table cellspacing='0' cellpadding='0' border="0">
+<tr>
+<td>
+I provide
+</td>
+<td><input id="provide_text_proxy" type="text" name='provide_text_proxy' onfocus='$("#i-need").show();'></td>
+</tr>
+</table>
+</div>
+
+<div id="i-need" class="default-hidden">
+<div class="popover-close-box" id="popover-close-box" onclick="javascript:$('#i-need').hide();"></div>
+<form action="{{ url_for('add_provide') }}" method=post>
+<table cellspacing='0' cellpadding='0'>
+<tr>
+<td>
+I provide
+</td>
+<td><input id="provide_text" type="text" name='provide_text'></td>
+</tr>
+<tr>
+<td>Details</td>
+<td><textarea id="provide_content" name="provide_content" rows="4" cols="40"></textarea></td>
+</tr>
+ 
+<tr>
+<td></td>
+<td>
+<button type='submit' id="submit_need_post">Post Provide</button>
+</td>
+</tr>
+</table>
+</form>
+</div>
+<div style="height:50px;">
+</div>
+
+      <h3>My provides</h3>
+        <ul class=posts>
+        {% for provide in provides %}
+          <li>
+              <strong><a href="{{ url_for('user_home', username=provide.username) }}">{{ provide.username }}</a></strong> 
+              <a href="{{ url_for('provide_view', provideid=provide.provide_id) }}">{{ provide.provide_text }}</a>
+              <small>&mdash; {{ provide.provide_pub_date|datetimeformat }}</small>
+        {% else %}
+          <li><em>There's no provides so far.</em>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="span7">
+      <h3>Their needs</h3>
+    </div>
+  </div>
+{% endblock %}

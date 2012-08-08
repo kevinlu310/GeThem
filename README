@@ -1,0 +1,26 @@
+
+                        / GeThem /
+
+           because writing todo lists is not fun
+
+
+    ~ What is GeThem?
+
+      An Online-2-Offline platform powered by Flask, MySQL & Gensim.
+
+    ~ How do I use it?
+
+      1. edit the configuration in the config.py file or
+         export an GETHEM_SETTINGS environment variable
+         pointing to a configuration file.
+
+      2. in the shell setup database using schema.sql         
+
+      3. now you can run the gethem.py file with your
+         python interpreter and the application will
+         greet you on http://localhost:5000/
+         or 
+         you can run using on tornado server with
+         python torna.py and the application will 
+         greet you on http://localhost:8000/
+	
