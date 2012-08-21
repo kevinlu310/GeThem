@@ -20,7 +20,8 @@ drop table if exists need;
 create table need (
   need_id integer primary key auto_increment,
   need_author_id integer not null,
-  need_text varchar(400) not null,
+  need_title varchar(400) not null,
+  need_content varchar(800) not null,
   need_pub_date integer
 );
 
@@ -28,7 +29,8 @@ drop table if exists provide;
 create table provide (
   provide_id integer primary key auto_increment,
   provide_author_id integer not null,
-  provide_text varchar(400) not null,
+  provide_title varchar(400) not null,
+  provide_content varchar(800) not null,
   provide_pub_date integer
 );
 
