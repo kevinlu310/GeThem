@@ -1,9 +1,6 @@
 
                         / GeThem /
 
-           because writing todo lists is not fun
-
-
     ~ What is GeThem?
 
       An Online-2-Offline platform powered by Flask, MySQL & Gensim.
@@ -24,4 +21,3 @@
          python torna.py and the application will 
          greet you on http://localhost:8000/
 	  
-	  4. test again.      
