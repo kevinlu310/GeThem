@@ -2,8 +2,8 @@
 
 DB_HOST = 'localhost'
 DB_NAME = 'gethemdb'
-DB_USER = 'dbuser'
-DB_PASSWD = 'dbpassword'
+DB_USER = 'root'
+DB_PASSWD = 'lkflhy1314'
 
 SECRET_KEY = 'development key'
 

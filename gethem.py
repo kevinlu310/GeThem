@@ -219,9 +219,9 @@ def add_need():
     """Registers a new need post for the user."""
     if 'user_id' not in session:
         abort(401)
-    if request.form['need_text']:
-        g.db.execute('''insert into need (need_author_id, need_text, need_content, need_pub_date)
-            values (%s, %s, %s, %s)''', session['user_id'], request.form['need_text'], request.form['need_content'],
+    if request.form['need_title']:
+        g.db.execute('''insert into need (need_author_id, need_title, need_content, need_pub_date)
+            values (%s, %s, %s, %s)''', session['user_id'], request.form['need_title'], request.form['need_content'],
               int(time.time()))
         flash('Your need was posted.')
     return render_template('ineed.html')
@@ -231,9 +231,9 @@ def add_provide():
     """Registers a new provide post for the user."""
     if 'user_id' not in session:
         abort(401)
-    if request.form['provide_text']:
-        g.db.execute('''insert into provide (provide_author_id, provide_text, provide_content, provide_pub_date)
-            values (%s, %s, %s, %s)''', session['user_id'], request.form['provide_text'], request.form['provide_content'],
+    if request.form['provide_title']:
+        g.db.execute('''insert into provide (provide_author_id, provide_title, provide_content, provide_pub_date)
+            values (%s, %s, %s, %s)''', session['user_id'], request.form['provide_title'], request.form['provide_content'],
               int(time.time()))
         flash('Your provide was posted.')
     return render_template('iprovide.html')
