@@ -28,7 +28,7 @@ I need
 <td>
 I need
 </td>
-<td><input id="need_text" type="text" name='need_text'></td>
+<td><input id="need_text" type="text" name='need_title'></td>
 </tr>
 <tr>
 <td>Details</td>
@@ -51,7 +51,7 @@ I need
         {% for need in needs %}
           <li>
               <strong><a href="{{ url_for('user_home', username=need.username) }}">{{ need.username }}</a></strong> 
-              <a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_text }}</a>
+              <a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_title }}</a>
               <small>&mdash; {{ need.need_pub_date|datetimeformat }}</small>
         {% else %}
           <li><em>There's no needs so far.</em>
