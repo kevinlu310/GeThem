@@ -80,37 +80,160 @@ def upload_file():
 		 <input type=submit value=Upload>
 	</form>
 	'''
-	
+# 
+# The followings handle:
+# 1. login
+# 2. register
+# 3. home, index, public, user_page
+# 4. logout
+#
+# ==
+# Note:
+# the main entry is index!
+
 @app.route('/')
-def home():
+def index():
+	if 'user_id' not in session or session['user_id'] is None:
+		return redirect(url_for('login'))
+
+	return redirect(url_for('home', userid=session['user_id']))
+
+@app.route('/u/<userid>')
+def home(userid):
 	"""Displays home"""
-	profile_user = g.user
-	if g.user:
+	if 'logged_in' in session and session['logged_in'] == True:
 		needs=g.db.iter('''select need.*, user.* from need, user where
 					user.user_id = need.need_author_id and user.user_id = %s
-					order by need.need_pub_date''',
-					profile_user['user_id'])
+					order by need.need_pub_date limit 1000''', userid)
 		provides=g.db.iter('''select provide.*, user.* from provide, user where
 					user.user_id = provide.provide_author_id and user.user_id = %s
-					order by provide.provide_pub_date''',
-					profile_user['user_id'])
-	
+					order by provide.provide_pub_date limit 1000''', userid)
 		return render_template('home.html', needs=needs, provides=provides)
 	else:
 		return redirect(url_for('login'))
 
 @app.route('/all')
-def public_home():
+def public():
 	"""Displays needs and provides of all users."""
 	needs=g.db.iter('''select need.*, user.* from need, user
 					where need.need_author_id = user.user_id
-					order by need.need_pub_date''')
+					order by need.need_pub_date limit 1000''')
 	provides=g.db.iter('''select provide.*, user.* from provide, user
 					where provide.provide_author_id = user.user_id
-					order by provide.provide_pub_date''')
+					order by provide.provide_pub_date limit 1000''')
 	return render_template('home.html', needs=needs, provides=provides)
 
-@app.route('/need/<needid>')
+@app.route('/u/<username>')
+def user_page(username):
+	"""Displays a user's needs and provides."""
+	#profile_user = g.db.get('select * from user where username = %s',
+	#						username)
+	#print profile_user
+	if not g.user:
+		abort(404)
+	#userid = session.get('user_id')
+	#username = session.get('username')
+	#print userid, username
+	#if (not userid) and (not username):
+	#	abort(401)
+	#profile_user = g.db.get('select * from user where user_id = %s', userid)
+	#if not profile_user:
+	#	profile_user = g.db.get('''select * from user where username = %s''', username)
+
+	#print profile_user
+	#print session['user_id']
+	followed = False
+	if g.user:
+		#followed = g.db.get('''select * from follower where
+		#	follower.who_id = %s and follower.whom_id = %s''',
+		#	profile_user['user_id'], profile_user['user_id']) \
+		#	is not None
+		needs=g.db.iter('''select need.*, user.* from need, user where
+			user.user_id = need.need_author_id and user.user_id = %s
+			order by need.need_pub_date limit 1000''',
+			g.user_id)
+		provides=g.db.iter('''select provide.*, user.* from provide, user where
+			user.user_id = provide.provide_author_id and user.user_id = %s
+			order by provide.provide_pub_date limit 1000''',
+			g.user_id)
+	
+	return render_template('home.html', needs=needs, provides=provides,
+						   followed=followed, profile_user=profile_user)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	"""Logs the user in."""
+	if 'user_id' in session and session['user_id'] is not None:
+		######## for testing
+		flash(session['username'])
+		return redirect(url_for('home', userid=session['user_id']))
+	error = None
+	if request.method== 'POST':
+		user = g.db.get('''select * from user where
+			username = %s''', request.form['username'])
+		if user is None:
+			error = 'Invalid username'
+		elif not check_password_hash(user['pw_hash'],
+									 request.form['password']):
+			error = 'Invalid password'
+		else:
+			flash('You were logged in')
+			user = g.db.get('''select * from user where username = %s''',
+				request.form['username'])
+			if not user:
+				abort(404)
+			session['user_id'] = user['user_id']
+			session['username'] = user['username']
+			session['logged_in'] = True
+			
+			return redirect(url_for('home', userid=session['user_id']))
+	return render_template('login.html', error=error)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+	"""Register a user."""
+	if 'logged_in' in session and session['logged_in']:
+		return redirect(url_for('home', userid=session['user_id']))
+	error = None
+	if request.method == 'POST':
+		if not request.form['username']:
+			error = 'You have to enter a username'
+		elif not request.form['email'] or \
+				 '@' not in request.form['email']:
+			error = 'You have to enter a valid email address'
+		elif not request.form['password']:
+			error = 'You have to enter a password'
+		elif request.form['password'] != request.form['password2']:
+			error = 'The two passwords do not match'
+		elif get_user_id(request.form['username']) is not None:
+			error = 'The username is already taken'
+		else:
+			g.db.execute('''insert into user ( \
+				username, email, pw_hash) values(%s, %s, %s)''', \
+				request.form['username'], request.form['email'], \
+				generate_password_hash(request.form['password']))
+			
+			# grab userid and store session.
+			user = g.db.get('''select * from user where username = %s''',
+				request.form['username'])
+			session['logged_in'] = True
+			session['user_id'] = user['user_id']
+			session['username'] = user['username']
+			
+			flash('You were successfully registered and can login now')
+			return redirect(url_for('home', userid=session['user_id']))
+	return render_template('register.html', error=error)
+
+@app.route('/logout')
+def logout():
+	"""Logs the user out."""
+	flash('You were logged out.')
+	session.pop('logged_in', None)
+	session.pop('user_id', None)
+	session.pop('username', None)
+	return redirect(url_for('index'))
+
+@app.route('/needs/<needid>')
 def need_view(needid):
 	#need view
 	need=g.db.get('select need.*,user.* from need,user where user.user_id=need.need_author_id and need.need_id=%s',needid)
@@ -118,50 +241,13 @@ def need_view(needid):
 		abort(404)
 	return render_template('needview.html',need=need)
 
-@app.route('/provide/<provideid>')
+@app.route('/provides/<provideid>')
 def provide_view(provideid):
 	#provide view
 	provide=g.db.get('select provide.*,user.* from provide,user where user.user_id=provide.provide_author_id and provide.provide_id=%s',provideid)
 	if provide is None:
 		abort(404)
 	return render_template('provideview.html',provide=provide)
-
-@app.route('/home')
-def user_home():
-	"""Displays a user's needs and provides."""
-	#profile_user = g.db.get('select * from user where username = %s',
-	#						username)
-	#print profile_user
-	#if profile_user is None:
-	#	abort(404)
-	userid = session.get('user_id')
-	username = session.get('username')
-	print userid, username
-	if (not userid) and (not username):
-		abort(401)
-	profile_user = g.db.get('select * from user where user_id = %s', userid)
-	if not profile_user:
-		profile_user = g.db.get('''select * from user where username = %s''', username)
-
-	#print profile_user
-	#print session['user_id']
-	followed = False
-	if profile_user:
-		followed = g.db.get('''select * from follower where
-			follower.who_id = %s and follower.whom_id = %s''',
-			profile_user['user_id'], profile_user['user_id']) \
-			is not None
-		needs=g.db.iter('''select need.*, user.* from need, user where
-			user.user_id = need.need_author_id and user.user_id = %s
-			order by need.need_pub_date''',
-			profile_user['user_id'])
-		provides=g.db.iter('''select provide.*, user.* from provide, user where
-			user.user_id = provide.provide_author_id and user.user_id = %s
-			order by provide.provide_pub_date''',
-			profile_user['user_id'])
-	
-	return render_template('home.html', needs=needs, provides=provides,
-						   followed=followed, profile_user=profile_user)
 
 @app.route('/<username>/follow')
 def follow_user(username):
@@ -249,64 +335,6 @@ def add_provide():
 		flash('Your provide was posted.')
 	return render_template('iprovide.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-	"""Logs the user in."""
-	if g.user:
-		######## for testing
-		flash(g.user.username)	
-		return redirect(url_for('home'))
-	error = None
-	if request.method== 'POST':
-		user = g.db.get('''select * from user where
-			username = %s''', request.form['username'])
-		if user is None:
-			error = 'Invalid username'
-		elif not check_password_hash(user['pw_hash'],
-									 request.form['password']):
-			error = 'Invalid password'
-		else:
-			flash('You were logged in')
-			session['user_id'] = user['user_id']
-			#print session['user_id']
-			return redirect(url_for('home'))
-	return render_template('login.html', error=error)
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-	"""Register a user."""
-	if g.user:
-		return redirect(url_for('ineed'))
-	error = None
-	if request.method == 'POST':
-		if not request.form['username']:
-			error = 'You have to enter a username'
-		elif not request.form['email'] or \
-				 '@' not in request.form['email']:
-			error = 'You have to enter a valid email address'
-		elif not request.form['password']:
-			error = 'You have to enter a password'
-		elif request.form['password'] != request.form['password2']:
-			error = 'The two passwords do not match'
-		elif get_user_id(request.form['username']) is not None:
-			error = 'The username is already taken'
-		else:
-			g.db.execute('''insert into user ( \
-				username, email, pw_hash) values(%s, %s, %s)''', \
-				request.form['username'], request.form['email'], \
-				generate_password_hash(request.form['password']))
-			flash('You were successfully registered and can login now')
-			session['username'] = request.form['username']
-			#print session['username']
-			return redirect(url_for('user_home'))
-	return render_template('register.html', error=error)
-
-@app.route('/logout')
-def logout():
-	"""Logs the user out."""
-	flash('You were logged out.')
-	session.pop('user_id', None)
-	return redirect(url_for('login'))
 
 # add some filters to jinja
 app.jinja_env.filters['datetimeformat'] = format_datetime

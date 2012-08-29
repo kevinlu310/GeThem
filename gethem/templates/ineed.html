@@ -50,7 +50,7 @@ I need
         <ul class=posts>
         {% for need in needs %}
           <li>
-              <strong><a href="{{ url_for('user_home', username=need.username) }}">{{ need.username }}</a></strong> 
+              <strong><a href="{{ url_for('user_page', username=need.username) }}">{{ need.username }}</a></strong> 
               <a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_title }}</a>
               <small>&mdash; {{ need.need_pub_date|datetimeformat }}</small>
         {% else %}
