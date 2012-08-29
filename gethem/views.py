@@ -126,18 +126,30 @@ def provide_view(provideid):
 		abort(404)
 	return render_template('provideview.html',provide=provide)
 
-@app.route('/<username>')
-def user_home(username):
+@app.route('/home')
+def user_home():
 	"""Displays a user's needs and provides."""
-	profile_user = g.db.get('select * from user where username = %s',
-							username)
-	if profile_user is None:
-		abort(404)
+	#profile_user = g.db.get('select * from user where username = %s',
+	#						username)
+	#print profile_user
+	#if profile_user is None:
+	#	abort(404)
+	userid = session.get('user_id')
+	username = session.get('username')
+	print userid, username
+	if (not userid) and (not username):
+		abort(401)
+	profile_user = g.db.get('select * from user where user_id = %s', userid)
+	if not profile_user:
+		profile_user = g.db.get('''select * from user where username = %s''', username)
+
+	#print profile_user
+	#print session['user_id']
 	followed = False
-	if g.user:
+	if profile_user:
 		followed = g.db.get('''select * from follower where
 			follower.who_id = %s and follower.whom_id = %s''',
-			session['user_id'], profile_user['user_id']) \
+			profile_user['user_id'], profile_user['user_id']) \
 			is not None
 		needs=g.db.iter('''select need.*, user.* from need, user where
 			user.user_id = need.need_author_id and user.user_id = %s
@@ -256,6 +268,7 @@ def login():
 		else:
 			flash('You were logged in')
 			session['user_id'] = user['user_id']
+			#print session['user_id']
 			return redirect(url_for('home'))
 	return render_template('login.html', error=error)
 
@@ -283,7 +296,9 @@ def register():
 				request.form['username'], request.form['email'], \
 				generate_password_hash(request.form['password']))
 			flash('You were successfully registered and can login now')
-			return redirect(url_for('login'))
+			session['username'] = request.form['username']
+			#print session['username']
+			return redirect(url_for('user_home'))
 	return render_template('register.html', error=error)
 
 @app.route('/logout')
