@@ -19,6 +19,7 @@ from hashlib import md5
 from datetime import datetime
 from gethem import app
 from gethem import ALLOWED_EXTENSIONS
+from pprint import pprint
 import time
 import os
 import config
@@ -54,6 +55,7 @@ def before_request():
 def close_connection(response):
 	if hasattr(g, 'db'):
 		g.db.close()
+	g.user = None
 	return response
 
 #Show uploaded file
@@ -121,44 +123,40 @@ def public():
 	provides=g.db.iter('''select provide.*, user.* from provide, user
 					where provide.provide_author_id = user.user_id
 					order by provide.provide_pub_date limit 1000''')
-	return render_template('home.html', needs=needs, provides=provides)
+	return render_template('public.html', needs=needs, provides=provides)
 
 @app.route('/u/<username>')
 def user_page(username):
 	"""Displays a user's needs and provides."""
-	#profile_user = g.db.get('select * from user where username = %s',
-	#						username)
-	#print profile_user
+	print "I am here!!!"
+	print username
+	print g.user.username
+	if not username:
+		abort(404)
+	target_user = g.db.get('select * from user where username = %s',
+							username)
 	if not g.user:
 		abort(404)
-	#userid = session.get('user_id')
-	#username = session.get('username')
-	#print userid, username
-	#if (not userid) and (not username):
-	#	abort(401)
-	#profile_user = g.db.get('select * from user where user_id = %s', userid)
-	#if not profile_user:
-	#	profile_user = g.db.get('''select * from user where username = %s''', username)
-
-	#print profile_user
-	#print session['user_id']
+	
+	if target_user is not None and target_user['user_id'] == g.user.user_id:
+		return redirect(url_for('home', userid=g.user.user_id))
+	
 	followed = False
-	if g.user:
-		#followed = g.db.get('''select * from follower where
-		#	follower.who_id = %s and follower.whom_id = %s''',
-		#	profile_user['user_id'], profile_user['user_id']) \
-		#	is not None
+	if target_user:
+		followed = g.db.get('''select * from follower where
+			follower.who_id = %s and follower.whom_id = %s''',
+			g.user.user_id, target_user['user_id']) is not None
 		needs=g.db.iter('''select need.*, user.* from need, user where
 			user.user_id = need.need_author_id and user.user_id = %s
 			order by need.need_pub_date limit 1000''',
-			g.user_id)
+			target_user['user_id'])
 		provides=g.db.iter('''select provide.*, user.* from provide, user where
 			user.user_id = provide.provide_author_id and user.user_id = %s
 			order by provide.provide_pub_date limit 1000''',
-			g.user_id)
+			target_user['user_id'])
 	
-	return render_template('home.html', needs=needs, provides=provides,
-						   followed=followed, profile_user=profile_user)
+	return render_template('user_page.html', needs=needs, provides=provides,
+						   followed=followed, target_user=target_user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -185,6 +183,7 @@ def login():
 			session['user_id'] = user['user_id']
 			session['username'] = user['username']
 			session['logged_in'] = True
+			g.user = user
 			
 			return redirect(url_for('home', userid=session['user_id']))
 	return render_template('login.html', error=error)
@@ -219,6 +218,7 @@ def register():
 			session['logged_in'] = True
 			session['user_id'] = user['user_id']
 			session['username'] = user['username']
+			g.user = user
 			
 			flash('You were successfully registered and can login now')
 			return redirect(url_for('home', userid=session['user_id']))
@@ -290,12 +290,15 @@ def ineed():
 	if profile_user is None:
 		abort(404)
 	if g.user:
-		needs=g.db.iter('''select need.*, user.* from need, user where
+		my_needs=g.db.iter('''select need.*, user.* from need, user where
 			user.user_id = need.need_author_id and user.user_id = %s
 			order by need.need_pub_date''',
 			profile_user['user_id'])
+		
+		# TODO: bring matchdb's data here! Currently, only test UI.
+		they_provides = g.db.iter('''select * from provide limit 1000''')
 	
-	return render_template('ineed.html', needs=needs)
+	return render_template('ineed.html', needs=my_needs, provides=they_provides)
 
 @app.route('/iprovide')
 def iprovide():
@@ -304,12 +307,15 @@ def iprovide():
 	if profile_user is None:
 		abort(404)
 	if g.user:
-		provides=g.db.iter('''select provide.*, user.* from provide, user where
+		my_provides=g.db.iter('''select provide.*, user.* from provide, user where
 			user.user_id = provide.provide_author_id and user.user_id = %s
 			order by provide.provide_pub_date''',
 			profile_user['user_id'])
+		
+		# TODO: bring matchdb's data here! Currently, only test UI.
+		they_needs = g.db.iter('''select * from need''')
 
-	return render_template('iprovide.html', provides=provides)
+	return render_template('iprovide.html', provides=my_provides, needs=they_needs)
 
 @app.route('/add_need', methods=['POST'])
 def add_need():

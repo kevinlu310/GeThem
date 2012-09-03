@@ -2,12 +2,11 @@
 
 {% block content %}
   <div class="page-header">
-    <h1>Home</small></h1>
+    <h1>User Profile</small></h1>
   </div>
   <div class="row">
-    
-      <div class="needs-list">
-        <div class="needs-title"><h3>My Needs</h3></div>
+		<div class="needs-list">
+        <div class="needs-title"><h3>{{ target_user.username }}'s Needs</h3></div>
         <div class="needs-zoom"><a href="#" onclick="javascript:showNeeds();">&rarr;</a></div>
         <div class="clear"></div>
         <ul class=posts>
@@ -16,14 +15,13 @@
               <strong><a href="{{ url_for('user_page', username=need.username) }}">{{ need.username }}</a></strong> 
               <a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_title }}</a>
               <small>&mdash; {{ need.need_pub_date|datetimeformat }}</small>
-		   </li>
         {% else %}
-          <li><em>There's no needs so far.</em></li>
+          <li><em>There's no needs so far.</em>
         {% endfor %}
         </ul>
       </div>
       <div class="provides-list">
-        <div class="provides-title"><h3>My Provides</h3></div>
+        <div class="provides-title"><h3>{{ target_user.username }}'s Provides</h3></div>
         <div class="provides-zoom"><a href="#" onclick="javascript:showProvides();">&larr;</a></div>
         <div class="clear"></div>
         <ul class=posts>
@@ -32,11 +30,10 @@
               <strong><a href="{{ url_for('user_page', username=provide.username) }}">{{ provide.username }}</a></strong> 
               <a href="{{ url_for('provide_view', provideid=provide.provide_id) }}">{{ provide.provide_title }}</a>
               <small>&mdash; {{ provide.provide_pub_date|datetimeformat }}</small>
-	      </li>
         {% else %}
-          <li><em>There's no provides so far.</em></li>
+          <li><em>There's no provides so far.</em>
         {% endfor %}
         </ul>
       </div>
-  </div>
+</div>
 {% endblock %}

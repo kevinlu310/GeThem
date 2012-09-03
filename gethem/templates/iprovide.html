@@ -53,13 +53,24 @@ I provide
               <strong><a href="{{ url_for('user_page', username=provide.username) }}">{{ provide.username }}</a></strong> 
               <a href="{{ url_for('provide_view', provideid=provide.provide_id) }}">{{ provide.provide_title }}</a>
               <small>&mdash; {{ provide.provide_pub_date|datetimeformat }}</small>
+		  </li>
         {% else %}
-          <li><em>There's no provides so far.</em>
+          <li><em>There's no provides so far.</em></li>
         {% endfor %}
         </ul>
     </div>
     <div class="span7">
       <h3>Their needs</h3>
+        <ul class=posts>
+        {% for need in needs %}
+          <li>
+              <strong><a href="{{ url_for('user_page', username=need.username) }}">{{ need.username }}</a></strong> 
+              <a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_title }}</a>
+              <small>&mdash; {{ need.need_pub_date|datetimeformat }}</small>
+		  </li>
+        {% else %}
+          <li><em>There's no provides so far.</em></li>
+        {% endfor %}
     </div>
   </div>
 {% endblock %}
