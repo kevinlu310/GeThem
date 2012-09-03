@@ -19,6 +19,20 @@
     <script type=text/javascript src="{{
       url_for('static', filename='gethem.js') }}"></script>
 
+	<!-- The server push js -->
+	<script type="text/javascript">
+		logger = new Log(Log.DEBUG, Log.consoleLogger);
+		var source = new EventSource("http://localhost:8001/push");
+		source.onmessage = function (e) {
+			alert(string(e.data));
+			logger.debug(e.data);
+		};
+		source.addEventListener('message', function(e){
+			alert(e.data);
+			logger.debug(e.data)
+			}, false);
+	</script>
+
     <!-- Le styles -->
     <link rel=stylesheet type=text/css href="{{ 
       url_for('static', filename='default.css') }}">
@@ -130,6 +144,9 @@ ul.flashes li {
         {% endif %}
       {% endwith %}
 
+  <div class="push-message">
+  	<h4>Push message here!</h4>
+  </div>
       <div class="content">
       {% block content %}
       {% endblock %}

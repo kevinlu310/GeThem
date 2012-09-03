@@ -3,15 +3,14 @@ from tornado.ioloop import IOLoop
 from tornado.web import FallbackHandler
 from tornado.web import RequestHandler
 from tornado.web import Application
-from gethem import app
+import gethem
 
-tr = WSGIContainer(app)
-print app
+m = WSGIContainer(gethem.app)
 
-application = Application([
-  (r".*", FallbackHandler, dict(fallback=tr)),
+application_main = Application([
+	(r".*", FallbackHandler, {'fallback':m})
   ])
 
 if __name__ == "__main__":
-  application.listen(8000)
-  IOLoop.instance().start()
+	application_main.listen(8000)
+	IOLoop.instance().start()

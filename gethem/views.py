@@ -10,6 +10,7 @@ from flask import abort
 from flask import flash
 from flask import send_from_directory
 from flask import Blueprint
+from flask import Response
 from werkzeug import check_password_hash
 from werkzeug import generate_password_hash
 from werkzeug import secure_filename
@@ -19,6 +20,7 @@ from hashlib import md5
 from datetime import datetime
 from gethem import app
 from gethem import ALLOWED_EXTENSIONS
+from gethem import red
 from pprint import pprint
 import time
 import os
@@ -323,9 +325,16 @@ def add_need():
 	if 'user_id' not in session:
 		abort(401)
 	if request.form['need_title']:
+		ts = time.time()
 		g.db.execute('''insert into need (need_author_id, need_title, need_content, need_pub_date)
 			values (%s, %s, %s, %s)''', session['user_id'], request.form['need_title'], request.form['need_content'],
-			  int(time.time()))
+			  int(ts))
+
+		# pass msg to redis. Later push to clients.
+		title = request.form['need_title']
+		content = request.form['need_content']
+		print red.publish('push', u'[Need @ %s] %s: %s' % (ts, title, content))
+
 		flash('Your need was posted.')
 	return render_template('ineed.html')
 
@@ -335,11 +344,31 @@ def add_provide():
 	if 'user_id' not in session:
 		abort(401)
 	if request.form['provide_title']:
+		ts = time.time()
 		g.db.execute('''insert into provide (provide_author_id, provide_title, provide_content, provide_pub_date)
 			values (%s, %s, %s, %s)''', session['user_id'], request.form['provide_title'], request.form['provide_content'],
-			  int(time.time()))
+			  int(ts))
+
+		# pass msg to redis. Later push to clients.
+		title = request.form['provide_title']
+		content = request.form['provide_content']
+		print red.publish('push', u'[Provide @ %s] %s: %s' % (ts, title, content))
+
 		flash('Your provide was posted.')
 	return render_template('iprovide.html')
+
+
+# The following handle server push feature.
+#def event_push():
+#	pubsub = red.pubsub()
+#	pubsub.subscribe('push')
+#	for msg in pubsub.listen():
+#		print msg['data']
+#		yield 'data: %s\n\n' % msg['data']
+
+#@app.route('/push')
+#def push():
+#	return Response(event_push(), mimetype='text/event-stream')
 
 
 # add some filters to jinja
