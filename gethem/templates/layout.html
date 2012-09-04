@@ -18,16 +18,11 @@
       url_for('static', filename='bootstrap-dropdown.js') }}"></script>
     <script type=text/javascript src="{{
       url_for('static', filename='gethem.js') }}"></script>
+	<script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
 
 	<!-- The server push js -->
 	<script type="text/javascript">
-		var source = new EventSource('http://127.0.0.1:5000/notification');
-		source.onmessage = function (e) {
-			alert(e.data);
-		};
-		source.addEventListener('message', function(e){
-			alert(e.data);
-			}, false);
+		sock_js();
 	</script>
 
     <!-- Le styles -->

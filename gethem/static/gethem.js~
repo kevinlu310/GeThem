@@ -30,29 +30,4 @@ function showProvides()
   }
 }
 
-function sse()
-{
-	var source = new EventSource('http://com1384.eecs.utk.edu:5000/notification');
-	source.onmessage = function (e) {
-		alert(e.data);
-	};
-	source.addEventListener('message', function(e){
-		alert(e.data);
-	}, false);
-}
-
-function sock_js()
-{
-	var sock = new SockJS('http://com1384.eecs.utk.edu:5000/notification');
-	sock.onopen = function() {
-		console.log('open');
-	};
-	sock.onmessage = function(e) {
-		console.log('message', e.data);
-		alert(e.data);
-	};
-	sock.onclose = function() {
-		console.log('close');
-	};		
-}
 

@@ -1,3 +1,9 @@
+'''
+	This approach has been deprecated by SockJS.
+	Now, the runserver.py can handle both app
+	instance and pusher instance.
+'''
+
 from __future__ import with_statement
 from flask import Response
 from flask import Flask
@@ -41,4 +47,4 @@ def notification():
 if __name__ == '__main__':
 	app.debug = True
 	#app.threaded = True
-	app.run()
+	app.run(host="com1384.eecs.utk.edu")
