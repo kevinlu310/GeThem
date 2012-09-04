@@ -333,10 +333,16 @@ def add_need():
 		# pass msg to redis. Later push to clients.
 		title = request.form['need_title']
 		content = request.form['need_content']
-		print red.publish('push', u'[Need @ %s] %s: %s' % (ts, title, content))
+		print red.publish('notification', u'[Need @ %s] %s, %s' % (ts, title, content))
+
+		if g.user:
+			my_needs=g.db.iter('''select need.*, user.* from need, user where
+				user.user_id = need.need_author_id and user.user_id = %s
+				order by need.need_pub_date''',	g.user.user_id)
+			they_provides = g.db.iter('''select * from provide''')
 
 		flash('Your need was posted.')
-	return render_template('ineed.html')
+	return render_template('ineed.html', needs=my_needs, provides=they_provides)
 
 @app.route('/add_provide', methods=['POST'])
 def add_provide():
@@ -352,10 +358,16 @@ def add_provide():
 		# pass msg to redis. Later push to clients.
 		title = request.form['provide_title']
 		content = request.form['provide_content']
-		print red.publish('push', u'[Provide @ %s] %s: %s' % (ts, title, content))
+		print red.publish('notification', u'[Provide @ %s] %s, %s' % (ts, title, content))
 
+		if g.user:
+			my_provides=g.db.iter('''select provide.*, user.* from provide, user where
+				user.user_id = provide.provide_author_id and user.user_id = %s
+				order by provide.provide_pub_date''', g.user.user_id)
+			they_needs = g.db.iter('''select * from need''')
+			
 		flash('Your provide was posted.')
-	return render_template('iprovide.html')
+	return render_template('iprovide.html', provides=my_provides, needs=they_needs)
 
 
 # The following handle server push feature.
