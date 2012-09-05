@@ -97,15 +97,19 @@ def upload_file():
 
 @app.route('/')
 def index():
-	if 'user_id' not in session or session['user_id'] is None:
+	if g.user:
+		return redirect(url_for('home', userid=session['user_id']))
+	else:
 		return redirect(url_for('login'))
-
-	return redirect(url_for('home', userid=session['user_id']))
 
 @app.route('/u/<userid>')
 def home(userid):
 	"""Displays home"""
-	if 'logged_in' in session and session['logged_in'] == True:
+	profile_user = g.db.get('select * from user where user_id = %s',
+					userid)
+	if profile_user is None:
+		abort(404)
+	if session['user_id'] == profile_user['user_id']:
 		needs=g.db.iter('''select need.*, user.* from need, user where
 					user.user_id = need.need_author_id and user.user_id = %s
 					order by need.need_pub_date limit 1000''', userid)
@@ -114,6 +118,7 @@ def home(userid):
 					order by provide.provide_pub_date limit 1000''', userid)
 		return render_template('home.html', needs=needs, provides=provides)
 	else:
+		# TODO bug here, behavior not expected
 		return redirect(url_for('login'))
 
 @app.route('/all')
@@ -127,27 +132,22 @@ def public():
 					order by provide.provide_pub_date limit 1000''')
 	return render_template('public.html', needs=needs, provides=provides)
 
-@app.route('/u/<username>')
+@app.route('/u/<username>/')
 def user_page(username):
 	"""Displays a user's needs and provides."""
-	print "I am here!!!"
-	print username
-	print g.user.username
-	if not username:
-		abort(404)
 	target_user = g.db.get('select * from user where username = %s',
 							username)
-	if not g.user:
+	if target_user is None:
 		abort(404)
 	
-	if target_user is not None and target_user['user_id'] == g.user.user_id:
-		return redirect(url_for('home', userid=g.user.user_id))
+	if target_user['user_id'] == session['user_id']:
+		return redirect(url_for('home', userid=session['user_id']))
 	
 	followed = False
-	if target_user:
+	if g.user:
 		followed = g.db.get('''select * from follower where
 			follower.who_id = %s and follower.whom_id = %s''',
-			g.user.user_id, target_user['user_id']) is not None
+			session['user_id'], target_user['user_id']) is not None
 		needs=g.db.iter('''select need.*, user.* from need, user where
 			user.user_id = need.need_author_id and user.user_id = %s
 			order by need.need_pub_date limit 1000''',
@@ -163,7 +163,7 @@ def user_page(username):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	"""Logs the user in."""
-	if 'user_id' in session and session['user_id'] is not None:
+	if g.user:
 		######## for testing
 		flash(session['username'])
 		return redirect(url_for('home', userid=session['user_id']))
@@ -178,22 +178,14 @@ def login():
 			error = 'Invalid password'
 		else:
 			flash('You were logged in')
-			user = g.db.get('''select * from user where username = %s''',
-				request.form['username'])
-			if not user:
-				abort(404)
 			session['user_id'] = user['user_id']
-			session['username'] = user['username']
-			session['logged_in'] = True
-			g.user = user
-			
 			return redirect(url_for('home', userid=session['user_id']))
 	return render_template('login.html', error=error)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
 	"""Register a user."""
-	if 'logged_in' in session and session['logged_in']:
+	if g.user:
 		return redirect(url_for('home', userid=session['user_id']))
 	error = None
 	if request.method == 'POST':
@@ -213,26 +205,15 @@ def register():
 				username, email, pw_hash) values(%s, %s, %s)''', \
 				request.form['username'], request.form['email'], \
 				generate_password_hash(request.form['password']))
-			
-			# grab userid and store session.
-			user = g.db.get('''select * from user where username = %s''',
-				request.form['username'])
-			session['logged_in'] = True
-			session['user_id'] = user['user_id']
-			session['username'] = user['username']
-			g.user = user
-			
 			flash('You were successfully registered and can login now')
-			return redirect(url_for('home', userid=session['user_id']))
+			return redirect(url_for('login'))
 	return render_template('register.html', error=error)
 
 @app.route('/logout')
 def logout():
 	"""Logs the user out."""
 	flash('You were logged out.')
-	session.pop('logged_in', None)
 	session.pop('user_id', None)
-	session.pop('username', None)
 	return redirect(url_for('index'))
 
 @app.route('/needs/<needid>')
@@ -386,6 +367,6 @@ def add_provide():
 # add some filters to jinja
 app.jinja_env.filters['datetimeformat'] = format_datetime
 
-#if __name__ == '__main__':
-#	app.debug = True
-#	app.run(host='127.0.0.1')
+if __name__ == '__main__':
+	app.debug = True
+	app.run(host='127.0.0.1')
