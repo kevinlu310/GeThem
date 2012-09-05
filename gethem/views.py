@@ -277,7 +277,10 @@ def ineed():
 			profile_user['user_id'])
 		
 		# TODO: bring matchdb's data here! Currently, only test UI.
-		they_provides = g.db.iter('''select * from provide limit 1000''')
+		#they_provides = g.db.iter('''select provide.*, user.* from provide, user limit 1000''')
+		they_provides=g.db.iter('''select provide.*, user.* from provide, user
+						where provide.provide_author_id = user.user_id
+						order by provide.provide_pub_date limit 1000''')
 	
 	return render_template('ineed.html', needs=my_needs, provides=they_provides)
 
@@ -294,7 +297,10 @@ def iprovide():
 			profile_user['user_id'])
 		
 		# TODO: bring matchdb's data here! Currently, only test UI.
-		they_needs = g.db.iter('''select * from need''')
+		#they_needs = g.db.iter('''select need.*, user.* from need, user limit 1000''')
+		they_needs=g.db.iter('''select need.*, user.* from need, user
+						where need.need_author_id = user.user_id
+						order by need.need_pub_date limit 1000''')
 
 	return render_template('iprovide.html', provides=my_provides, needs=they_needs)
 
@@ -308,7 +314,7 @@ def add_need():
 			values (%s, %s, %s, %s)''', session['user_id'], request.form['need_title'], request.form['need_content'],
 			  int(time.time()))
 		flash('Your need was posted.')
-	return render_template('ineed.html')
+	return redirect(url_for('ineed'))
 
 @app.route('/add_provide', methods=['POST'])
 def add_provide():
@@ -320,7 +326,7 @@ def add_provide():
 			values (%s, %s, %s, %s)''', session['user_id'], request.form['provide_title'], request.form['provide_content'],
 			  int(time.time()))
 		flash('Your provide was posted.')
-	return render_template('iprovide.html')
+	return redirect(url_for('iprovide'))
 
 
 # add some filters to jinja
