@@ -13,11 +13,7 @@
 
       2. in the shell setup database using schema.sql         
 
-      3. now you can run the gethem.py file with your
-         python interpreter and the application will
-         greet you on http://localhost:5000/
-         or 
-         you can run using on tornado server with
-         python torna.py and the application will 
+      3. you can run using on tornado server with
+         python runserver.py and the application will 
          greet you on http://localhost:8000/
 	  
