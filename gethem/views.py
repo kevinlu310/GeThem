@@ -329,11 +329,7 @@ def add_need():
 			they_provides = g.db.iter('''select * from provide''')
 
 		flash('Your need was posted.')
-<<<<<<< HEAD
-	return render_template('ineed.html', needs=my_needs, provides=they_provides)
-=======
 	return redirect(url_for('ineed'))
->>>>>>> 9493574b638a9fb67336e6398f8b810c39ed6b99
 
 @app.route('/add_provide', methods=['POST'])
 def add_provide():
@@ -358,29 +354,13 @@ def add_provide():
 			they_needs = g.db.iter('''select * from need''')
 			
 		flash('Your provide was posted.')
-<<<<<<< HEAD
-	return render_template('iprovide.html', provides=my_provides, needs=they_needs)
 
-
-# The following handle server push feature.
-#def event_push():
-#	pubsub = red.pubsub()
-#	pubsub.subscribe('push')
-#	for msg in pubsub.listen():
-#		print msg['data']
-#		yield 'data: %s\n\n' % msg['data']
-
-#@app.route('/push')
-#def push():
-#	return Response(event_push(), mimetype='text/event-stream')
-=======
 	return redirect(url_for('iprovide'))
->>>>>>> 9493574b638a9fb67336e6398f8b810c39ed6b99
 
 
 # add some filters to jinja
 app.jinja_env.filters['datetimeformat'] = format_datetime
 
-if __name__ == '__main__':
-	app.debug = True
-	app.run(host='127.0.0.1')
+#if __name__ == '__main__':
+#	app.debug = True
+#	app.run(host='127.0.0.1')
