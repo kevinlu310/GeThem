@@ -32,7 +32,7 @@ function showProvides()
 
 function sse()
 {
-	var source = new EventSource('http://com1384.eecs.utk.edu:5000/notification');
+	var source = new EventSource('http://localhost:5000/notification');
 	source.onmessage = function (e) {
 		alert(e.data);
 	};
@@ -43,7 +43,7 @@ function sse()
 
 function sock_js()
 {
-	var sock = new SockJS('http://com1384.eecs.utk.edu:5000/notification');
+	var sock = new SockJS('http://localhost:5000/notification');
 	sock.onopen = function() {
 		console.log('open');
 	};

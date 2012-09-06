@@ -53,10 +53,10 @@ I need
               <strong><a href="{{ url_for('user_page', username=need.username) }}">{{ need.username }}</a></strong> 
               <a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_title }}</a>
               <small>&mdash; {{ need.need_pub_date|datetimeformat }}</small>
+		  </li>
         {% else %}
-          <li><em>There's no needs so far.</em>
+          <li><em>There's no needs so far.</em></li>
         {% endfor %}
-		</li>
         </ul>
     </div>
     <div class="span7">

@@ -164,8 +164,6 @@ def user_page(username):
 def login():
 	"""Logs the user in."""
 	if g.user:
-		######## for testing
-		flash(session['username'])
 		return redirect(url_for('home', userid=session['user_id']))
 	error = None
 	if request.method== 'POST':

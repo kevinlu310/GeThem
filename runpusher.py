@@ -47,4 +47,4 @@ def notification():
 if __name__ == '__main__':
 	app.debug = True
 	#app.threaded = True
-	app.run(host="com1384.eecs.utk.edu")
+	app.run(host="localhost")
