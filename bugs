@@ -1,1 +1,9 @@
-1. on pages ineed and iprovide, the first 4 username on the right column is not clickable.
+# This file is for bugs tracking purpose. Move fixed bugs from unfixed bugs
+# section to fixed bugs section. Please don't remove any known bugs.
+
+Unfixed bugs:
+1.  On pages ineed and iprovide, the first 4 username on the right column 
+	is not clickable.
+2.  "left" and "right" button for expanding and shrinking posts views.
+
+Fixed bugs:
