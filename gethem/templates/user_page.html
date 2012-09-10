@@ -9,7 +9,7 @@
         <div class="needs-title"><h3>{{ target_user.username }}'s Needs</h3></div>
         <div class="needs-zoom"><a href="#" onclick="javascript:showNeeds();">right</a></div>
         <div class="clear"></div>
-        <ul class=posts>
+        <ul class=posts id="need_post">
         {% for need in needs %}
           <li>
               <strong><a href="{{ url_for('user_page', username=need.username) }}">{{ need.username }}</a></strong> 
@@ -24,7 +24,7 @@
         <div class="provides-title"><h3>{{ target_user.username }}'s Provides</h3></div>
         <div class="provides-zoom"><a href="#" onclick="javascript:showProvides();">left</a></div>
         <div class="clear"></div>
-        <ul class=posts>
+        <ul class=posts id="provide_post">
         {% for provide in provides %}
           <li>
               <strong><a href="{{ url_for('user_page', username=provide.username) }}">{{ provide.username }}</a></strong> 

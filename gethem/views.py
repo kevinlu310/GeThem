@@ -22,6 +22,7 @@ from gethem import app
 from gethem import ALLOWED_EXTENSIONS
 from gethem import red
 from pprint import pprint
+import json
 import time
 import os
 import config
@@ -34,9 +35,22 @@ def connect_db():
 					  config.DB_PASSWD)
 
 def get_user_id(username):
-	rv = g.db.get('select * from user where username = %s',
-				   username)
+	rv = g.db.get('''select * from user where username = %s''', username)
 	return rv.id if rv else None
+
+def get_username(user_id):
+	rv = g.db.get('''select * from user where user_id = %s''', user_id)
+	return rv.username if rv else None
+
+def get_post_id(userid, title, content, mark):
+	if mark == 'need':
+		rv = g.db.get('''select * from need where need_author_id = %s 
+			and need_title = %s and need_content = %s''', userid, title, content)
+		return rv.need_id if rv else None
+	else:
+		rv = g.db.get('''select * from provide where provide_author_id = %s
+			and provide_title = %s and provide_content = %s''', userid, title, content)
+		return rv.provide_id if rv else None
 
 def format_datetime(timestamp):
 	"""Format a timestamp for display."""
@@ -112,10 +126,10 @@ def home(userid):
 	if session['user_id'] == profile_user['user_id']:
 		needs=g.db.iter('''select need.*, user.* from need, user where
 					user.user_id = need.need_author_id and user.user_id = %s
-					order by need.need_pub_date limit 1000''', userid)
+					order by need.need_pub_date desc limit 1000''', userid)
 		provides=g.db.iter('''select provide.*, user.* from provide, user where
 					user.user_id = provide.provide_author_id and user.user_id = %s
-					order by provide.provide_pub_date limit 1000''', userid)
+					order by provide.provide_pub_date desc limit 1000''', userid)
 		return render_template('home.html', needs=needs, provides=provides)
 	else:
 		# TODO bug here, behavior not expected
@@ -126,10 +140,10 @@ def public():
 	"""Displays needs and provides of all users."""
 	needs=g.db.iter('''select need.*, user.* from need, user
 					where need.need_author_id = user.user_id
-					order by need.need_pub_date limit 1000''')
+					order by need.need_pub_date desc limit 1000''')
 	provides=g.db.iter('''select provide.*, user.* from provide, user
 					where provide.provide_author_id = user.user_id
-					order by provide.provide_pub_date limit 1000''')
+					order by provide.provide_pub_date desc limit 1000''')
 	return render_template('public.html', needs=needs, provides=provides)
 
 @app.route('/u/<username>/')
@@ -150,11 +164,11 @@ def user_page(username):
 			session['user_id'], target_user['user_id']) is not None
 		needs=g.db.iter('''select need.*, user.* from need, user where
 			user.user_id = need.need_author_id and user.user_id = %s
-			order by need.need_pub_date limit 1000''',
+			order by need.need_pub_date desc limit 1000''',
 			target_user['user_id'])
 		provides=g.db.iter('''select provide.*, user.* from provide, user where
 			user.user_id = provide.provide_author_id and user.user_id = %s
-			order by provide.provide_pub_date limit 1000''',
+			order by provide.provide_pub_date desc limit 1000''',
 			target_user['user_id'])
 	
 	return render_template('user_page.html', needs=needs, provides=provides,
@@ -273,14 +287,14 @@ def ineed():
 	if g.user:
 		my_needs=g.db.iter('''select need.*, user.* from need, user where
 			user.user_id = need.need_author_id and user.user_id = %s
-			order by need.need_pub_date''',
+			order by need.need_pub_date desc limit 1000''',
 			profile_user['user_id'])
 		
 		# TODO: bring matchdb's data here! Currently, only test UI.
 		#they_provides = g.db.iter('''select provide.*, user.* from provide, user limit 1000''')
 		they_provides=g.db.iter('''select provide.*, user.* from provide, user
 						where provide.provide_author_id = user.user_id
-						order by provide.provide_pub_date limit 1000''')
+						order by provide.provide_pub_date desc limit 1000''')
 	
 	return render_template('ineed.html', needs=my_needs, provides=they_provides)
 
@@ -293,14 +307,14 @@ def iprovide():
 	if g.user:
 		my_provides=g.db.iter('''select provide.*, user.* from provide, user where
 			user.user_id = provide.provide_author_id and user.user_id = %s
-			order by provide.provide_pub_date''',
+			order by provide.provide_pub_date desc limit 1000''',
 			profile_user['user_id'])
 		
 		# TODO: bring matchdb's data here! Currently, only test UI.
 		#they_needs = g.db.iter('''select need.*, user.* from need, user limit 1000''')
 		they_needs=g.db.iter('''select need.*, user.* from need, user
 						where need.need_author_id = user.user_id
-						order by need.need_pub_date limit 1000''')
+						order by need.need_pub_date desc limit 1000''')
 
 	return render_template('iprovide.html', provides=my_provides, needs=they_needs)
 
@@ -318,12 +332,18 @@ def add_need():
 		# pass msg to redis. Later push to clients.
 		title = request.form['need_title']
 		content = request.form['need_content']
-		print red.publish('notification', u'[Need @ %s] %s, %s' % (ts, title, content))
+		post = {'type':'need', 
+				'user':get_username(session['user_id']), 
+				'title':title, 
+				'pid':get_post_id(session['user_id'], title, content, 'need'),
+				'ts':str(format_datetime(ts))}
+		print red.publish('notification', json.dumps(post))
+		#print red.publish('notification', u'[Need @ %s] %s, %s' % (ts, title, content))
 
 		if g.user:
 			my_needs=g.db.iter('''select need.*, user.* from need, user where
 				user.user_id = need.need_author_id and user.user_id = %s
-				order by need.need_pub_date''',	g.user.user_id)
+				order by need.need_pub_date desc limit 1000''',	g.user.user_id)
 			they_provides = g.db.iter('''select * from provide''')
 
 		flash('Your need was posted.')
@@ -343,12 +363,18 @@ def add_provide():
 		# pass msg to redis. Later push to clients.
 		title = request.form['provide_title']
 		content = request.form['provide_content']
-		print red.publish('notification', u'[Provide @ %s] %s, %s' % (ts, title, content))
+		post = {'type':'provide', 
+				'user':get_username(session['user_id']), 
+				'title':title, 
+				'pid':get_post_id(session['user_id'], title, content, 'provide'),
+				'ts':str(format_datetime(ts))}
+		print red.publish('notification', json.dumps(post))
+		#print red.publish('notification', u'provide,%s,%s,%s,%s' % (ts, title, content))
 
 		if g.user:
 			my_provides=g.db.iter('''select provide.*, user.* from provide, user where
 				user.user_id = provide.provide_author_id and user.user_id = %s
-				order by provide.provide_pub_date''', g.user.user_id)
+				order by provide.provide_pub_date desc limit 1000''', g.user.user_id)
 			they_needs = g.db.iter('''select * from need''')
 			
 		flash('Your provide was posted.')

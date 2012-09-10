@@ -61,7 +61,7 @@ I need
     </div>
     <div class="span7">
       <h3>Their provides</h3>
-	  <ul class=posts>
+	  <ul class=posts id='provide_post'>
 	  	{% for provide in provides %}
 		<li>
 			<strong><a href="{{ url_for('user_page', username=provide.username) }}">{{ provide.username }}</a></strong>

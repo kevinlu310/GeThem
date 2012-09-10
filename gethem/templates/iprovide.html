@@ -61,7 +61,7 @@ I provide
     </div>
     <div class="span7">
       <h3>Their needs</h3>
-        <ul class=posts>
+        <ul class=posts id='need_post'>
         {% for need in needs %}
           <li>
               <strong><a href="{{ url_for('user_page', username=need.username) }}">{{ need.username }}</a></strong> 

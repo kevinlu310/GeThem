@@ -32,6 +32,7 @@ class NotificationConnection(SockJSConnection):
 	def pubsub(cls, msg):
 		for c in cls.clients:
 			c.send(msg.body)
+			print msg.body
 
 
 
