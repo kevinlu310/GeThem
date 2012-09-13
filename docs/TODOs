@@ -1,3 +1,8 @@
 # This file is for TODO list tracking
 1.  Polishing UI of posts list viewing
+	1.1 Picture upload
+	1.2 Two column switching
 2.  Back-end matching engine
+	2.1 Data collection, Craigslist? Oodle?
+	2.2 Gensim integration
+3.  Location aware query implementation
