@@ -19,7 +19,7 @@ function showProvides()
   if ($(".provides-zoom").find("a").text()=='left')
   {
     $(".provides-list").width(840);
-    $(".provides-zoom").find("a").text("left");
+    $(".provides-zoom").find("a").text("right");
     $(".needs-list").hide();
   }
   else
