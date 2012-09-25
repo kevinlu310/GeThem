@@ -41,18 +41,17 @@
 		background-attachment: fixed;
 		background-repeat: repeat;
 		background-repeat: no-repeat;
-		background-image: url(http://omonstony.files.wordpress.com/2012/08/img_9702.jpg);
 		background-size: 100%;  
-        background-color: #C0DEED;
 	  }
       body {
-        padding-top: 40px; /* 40px to make the container go all the way to the bottom of the topbar */
+        padding-top: 60px; /* 40px to make the container go all the way to the bottom of the topbar */
+		padding-bottom: 40px;
       }
       .container > footer p {
         text-align: center; /* center align it with the container */
       }
       .container {
-        width: 840px; /* downsize our container to make the content feel a bit tighter and more cohesive. NOTE: this removes two full columns from the grid, meaning you only go to 14 columns and not 16. */
+        width: 900px; /* downsize our container to make the content feel a bit tighter and more cohesive. NOTE: this removes two full columns from the grid, meaning you only go to 14 columns and not 16. */
       }
 
       /* The white background content wrapper */
@@ -95,7 +94,7 @@ ul.flashes {
     list-style: none;
     margin-left: 0;
     padding-left: 0;
-    width: 840px;
+    width: 820px;
 }
 
 ul.flashes li {
@@ -104,7 +103,7 @@ ul.flashes li {
     font-size: 13px;
     margin-left: 0;
     padding-left: 0;
-    width: 840px;
+    width: 820px;
 }
 
     </style>
@@ -112,7 +111,29 @@ ul.flashes li {
   </head>
 
   <body>
-
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".subnav-collapse">
+				 	<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</a>
+				<a class="brand" href="#">Gethem</a>
+				<div class="nav-collapse subnav-collapse">
+					<ul class="nav">
+						<li><a href="{{url_for('public')}}"><i class="icon-globe icon-white"></i><strong>Public</strong></a></li>
+					</ul>
+					<form class="navbar-form pull-right" action="" method="post">
+              			<input class="input" type="text" name="username" placeholder="Username" size=30 value="{{request.form.username}}">
+						<input class="input" type="password" name="password" size=30 placeholder="Password">
+              			<button class="btn btn-primary" type="submit">Sign in</button>
+            			<button class="btn"><a href="{{ url_for('register') }}">Register</a></button>
+					</form>	
+				</div>
+			</div>
+		</div>
+	</div>
 
 
       {% with flashes = get_flashed_messages() %}
@@ -130,26 +151,15 @@ ul.flashes li {
           <h1>GeThem<small>Buy and sell locally</small></h1>
         </div>
 		-->
-		<div class="container-fluid">
-			<div class="row-fluid">
-				<div class="span8 pagination-centered">
+		<div class="container">
+			<div class="row" style="padding-top:40px;">
+				<div class="span12 pagination-centered">
             		<h1>Introducing Gethem.</h1>
-					<h2>Still want to be in the market...?</h2>
-					<iframe width="600" height="360" src="http://www.youtube.com/embed/60MQ3AG1c8o?feature=player_detailpage" frameborder="0" allowfullscreen></iframe>
 				</div>
-				<div class="span4 pagination-centered">
-            		<div id="signin">
-						<form action="" class="signin" method="post">
-              				<div><input class="input" type="text" name="username" placeholder="Username" size=30 value="{{request.form.username}}"></div>
-							<div><input class="input" type="password" name="password" size=30 placeholder="Password"></div>
-              				<div>
-								<p>
-									<button class="btn btn-large btn-primary" type="submit">Sign in</button>
-            						<a href="{{ url_for('register') }}">Register</a>
-								</p>
-							</div>
-            			</form>
-					</div>
+			</div>
+			<div class="row" style="padding-top:20px;">
+				<div class="span12 pagination-centered">
+					<iframe width="800" height="450" src="http://www.youtube.com/embed/60MQ3AG1c8o?feature=player_detailpage" frameborder="0" allowfullscreen></iframe>
 				</div>
 			</div>
 		</div>
@@ -168,9 +178,9 @@ ul.flashes li {
         </div>
 		-->
 
-	<!--
-      <footer>
-     <table>
+      <footer style="text-align:center; padding-top:20px;">
+     	<!--
+		<table style="text-align:center;">
             <tr>
                 <td>
                     <a href="#about">About</a>&nbsp;&nbsp;&nbsp;
@@ -182,9 +192,8 @@ ul.flashes li {
                 </td>
              </tr>
       </table>
+	  -->
         <p>&copy; GeThem 2012</p>
       </footer>
-	-->
-
   </body>
 </html>
