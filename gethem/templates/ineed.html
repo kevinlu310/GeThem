@@ -2,14 +2,9 @@
 
 {% block content %}
 
-<div class="container-fluid">
-	<div class="row-fluid">
-		<div class="span12">
-			<p>
-				<button class="btn btn-large btn-primary" type="button">Post a Need</button>
-			</p>
-		</div>	
-	</div>
+<div class="postbtn">
+	<p><button class="btn btn-large btn-primary" type="button">Post a Need</button></p>
+</div>	
 	<!--
 	<div class="row-fluid">
     	<div class="span6">
@@ -44,29 +39,29 @@
 		</div>
 	</div>
 	-->
-	<div class="row-fluid">
-		<div class="span6">
-			<div class="needs-list">
-      			<div class="needs-title"><h3>My needs</h3></div>
-				<div class="clear"></div>
-        		<ul class="posts">
-        		{% for need in needs %}
-          			<li>
-              			<strong><a href="{{ url_for('user_page', username=need.username) }}">{{ need.username }}</a></strong> 
-              			<a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_title }}</a>
-              			<small>&mdash; {{ need.need_pub_date|datetimeformat }}</small>
-		  			</li>
-        		{% else %}
-          			<li><em>There's no needs so far.</em></li>
-        		{% endfor %}
-        		</ul>
-    		</div>
-		</div>
-    	<div class="span6">
-			<div class="provides-list">
-      			<div class="provides-title"><h3>Their provides</h3></div>
-	  			<ul class="posts" id="provide_post">
-	  			{% for provide in provides %}
+<div class="row">
+	<div class="span6">
+		<div class="needs-list">
+  		<div class="needs-title"><h3>My needs</h3></div>
+			<div class="clear"></div>
+      <ul class="posts">
+      	{% for need in needs %}
+       		<li>
+         		<strong><a href="{{ url_for('user_page', username=need.username) }}">{{ need.username }}</a></strong> 
+         		<a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_title }}</a>
+           	<small>&mdash; {{ need.need_pub_date|datetimeformat }}</small>
+		  		</li>
+      	{% else %}
+       		<li><em>There's no needs so far.</em></li>
+      	{% endfor %}
+      </ul>
+    </div>
+	</div>
+  <div class="span6">
+		<div class="provides-list">
+  		<div class="provides-title"><h3>Their provides</h3></div>
+			<ul class="posts" id="provide_post">
+	  		{% for provide in provides %}
 					<li>
 						<strong><a href="{{ url_for('user_page', username=provide.username) }}">{{ provide.username }}</a></strong>
 						<a href="{{ url_for('provide_view', provideid=provide.provide_id) }}">{{ provide.provide_title }}</a>
@@ -77,7 +72,7 @@
 				{% endfor %}
 	  			</ul>
 			</div>
-    	</div>
-  	</div>
+    </div>
+  </div>
 </div>
 {% endblock %}
