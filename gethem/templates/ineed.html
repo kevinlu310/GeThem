@@ -3,8 +3,27 @@
 {% block content %}
 
 <div class="postbtn">
-	<p><button class="btn btn-large btn-primary" type="button">Post a Need</button></p>
-</div>	
+	<a data-toggle="modal" href="#ineed-post" class="btn btn-large btn-primary">Post a Need</a>
+</div>
+
+<div id="ineed-post" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="ineed-post-label" aria-hidden="true">
+	<form action="{{ url_for('add_need') }}" method=post>
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times; </button>
+			<h3>Post your need.</h3>
+		</div>
+		<div class="modal-body">
+			<p style="text-align: left;">I need:</p>
+			<input class="span6" type="text" name='need_title' placeholder="Enter a title of your post ...">
+			<p style="text-align: left;">Details:</p>
+			<textarea class="span6" name="need_content" placeholder="Enter you post details ..." rows="8"></textarea>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal">Close</button>
+			<button class="btn btn-primary" type="submit">Post it</button>
+		</div>
+	</form>
+</div>
 	<!--
 	<div class="row-fluid">
     	<div class="span6">
