@@ -285,16 +285,24 @@ def ineed():
 	if profile_user is None:
 		abort(404)
 	if g.user:
-		my_needs=g.db.iter('''select need.*, user.* from need, user where
+		my_needs_iter=g.db.iter('''select need.*, user.* from need, user where
 			user.user_id = need.need_author_id and user.user_id = %s
 			order by need.need_pub_date desc limit 1000''',
 			profile_user['user_id'])
+		my_needs = []
+		for item in my_needs_iter:
+			my_needs.append(item)
+		print len(my_needs)
 		
 		# TODO: bring matchdb's data here! Currently, only test UI.
 		#they_provides = g.db.iter('''select provide.*, user.* from provide, user limit 1000''')
-		they_provides=g.db.iter('''select provide.*, user.* from provide, user
+		they_provides_iter=g.db.iter('''select provide.*, user.* from provide, user
 						where provide.provide_author_id = user.user_id
 						order by provide.provide_pub_date desc limit 1000''')
+		they_provides = []
+		for item in they_provides_iter:
+			they_provides.append(item)
+		print len(they_provides)
 	
 	return render_template('ineed.html', needs=my_needs, provides=they_provides)
 
