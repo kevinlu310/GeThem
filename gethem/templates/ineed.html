@@ -26,47 +26,44 @@
 </div>
 
 <div class="container">
-	<div class="row">
-		<div class="span4">
-			<h3>My personal needs:</h3>
-			<div class="accordion" id="accordion2">
-				{% for i in range(needs|length) %}
-					<div class="accordion-group">					
-						<div class="accordion-heading">
-							<a class="accordion-toggle" data-toggle="collapse" data-parent="accordion2" href="#postneeds{{i}}">
-								<strong><a href="{{ url_for('user_page', username=needs[i].username) }}">{{ needs[i].username }}</a></strong> 
-         				<a href="{{ url_for('need_view', needid=needs[i].need_id) }}">{{ needs[i].need_title }}</a>
-           			<small>&mdash; {{ needs[i].need_pub_date|datetimeformat }}</small>
-							</a>
-						</div>
-						<div id="postneeds{{i}}" class="accordion-body collapse">
-							<div class="accordion-inner">
-								<p>hahahahhahahahahhahah</p>
+	<div class="tabbable tabs-left">
+		<ul class="nav nav-tabs span4">
+			<li class="active"><a data-toggle="tab" href="#"><i class="icon-chevron-right"></i>All</a></li>
+			{% for i in range(needs|length) %}
+				<li><a data-toggle="tab" href="#postprovides7"><i class="icon-chevron-right"></i>{{needs[i].need_title}}</a></li>
+			{% endfor %}
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active">
+				<div class="accordion" id="accordion2">
+					{% for j in range(provides|length) %}
+						<div class="accordion-group">
+							<div class="accordion-heading">
+								<div class="accordion-toggle" data-toggle="collapse" data-parent="accordion2" href="#postprovides{{j}}">
+									<table>
+										<tr>
+											<td style="width: 100px;"><img src="http://www.google.com/images/srpr/logo3w.png" width="120" height="120"></td>
+											<td style="width: 150px;"><a href="{{ url_for('provide_view', provideid=provides[j].provide_id) }}">{{provides[j].provide_title}}</a></td>
+											<td style="wdith: 150px;"><img src="http://www.google.com/images/srpr/logo3w.png" width="120" height="120"></td>
+										</tr>
+											<td style="width: 100px;"><a href="{{ url_for('user_page', username=provides[j].username) }}">{{provides[j].username}}</a></td>
+											<td style="width: 150px;"></td>
+											<td style="width: 150px;">{{provides[j].provide_pub_date|datetimeformat}}</td>
+										<tr>
+									</table>
+								</div>
+							</div>
+							<div id="postprovides{{j}}" class="accordion-body collapse">
+								<div class="accordion-inner">
+									<p>{{provides[j].provide_content}}</p>
+									<p style="text-align: right;">
+										<a class="btn btn-small" href="{{ url_for('provide_view', provideid=provides[j].provide_id) }}">Read details</a>
+									</p>
+								</div>
 							</div>
 						</div>
-					</div>
-				{% endfor %}
-			</div>
-		</div>
-		<div class="span8">
-			<h3>Market provides:</h3>
-			<div class="accordion" id="accordion3">
-				{% for j in range(provides|length) %}
-					<div class="accordion-group">
-						<div class="accordion-heading">
-							<a class="accordion-toggle" data-toggle="collapse" data-parent="accordion3" href="#postprovides{{j}}">
-								<strong><a href="{{ url_for('user_page', username=provides[j].username) }}">{{ provides[j].username }}</a></strong> 
-         				<a href="{{ url_for('provide_view', provideid=provides[j].provide_id) }}">{{ provides[j].provide_title }}</a>
-           			<small>&mdash; {{ provides[j].provide_pub_date|datetimeformat }}</small>
-							</a>
-						</div>
-						<div id="postprovides{{j}}" class="accordion-body collapse">
-							<div class="accordion-inner">
-								<p>hahahahhahahahhahahah</p>
-							</div>
-						</div>
-					</div>
-				{% endfor %}
+					{% endfor %}
+				</div>
 			</div>
 		</div>
 	</div>

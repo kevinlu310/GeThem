@@ -301,6 +301,7 @@ def ineed():
 						order by provide.provide_pub_date desc limit 1000''')
 		they_provides = []
 		for item in they_provides_iter:
+			if item.user_id == profile_user['user_id']: continue
 			they_provides.append(item)
 		print len(they_provides)
 	
