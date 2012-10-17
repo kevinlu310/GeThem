@@ -33,6 +33,30 @@
   			e.preventDefault();
 			});
 		</script>
+		
+		<script type="text/javascript">
+			function GetCurrentPageName() { 
+				//method to get Current page name from url. 
+				var PageURL = document.location.href; 
+				var PageName = PageURL.substring(PageURL.lastIndexOf('/') + 1); 
+				return PageName.toLowerCase() ;
+			}
+
+			$(document).ready(function(){	
+				var CurrPage = GetCurrentPageName();
+
+				switch(CurrPage){
+					case 'iprovide':
+		  			$('#provide_tag').addClass('active'); break;
+					case 'ineed':
+		  			$('#need_tag').addClass('active'); break;
+					case 'all':
+		  			$('#public_tag').addClass('active'); break;
+		  		default:
+		  			$('#home_tag').addClass('active'); break;
+				}
+		});
+		</script>
 
     <!-- Le styles -->
     <!--
@@ -132,18 +156,18 @@
 		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
-					<a class="btn btn-navbar" data-toggle="collapse" data-target=".subnav-collapse">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</a>
 					<div class="nav-collapse subnav-collapse">
 						<ul class="nav">
-							<li><a class="brand" href="{{url_for('index')}}">Gethem</a></li>
-							<li class="active"><a href="{{url_for('index')}}"><i class="icon-home icon-white"></i>Home</a></li>
-							<li><a href="{{url_for('ineed')}}"><i class="icon-hand-right icon-white"></i>iNeed</a></li>
-							<li><a href="{{url_for('iprovide')}}"><i class="icon-thumbs-up icon-white"></i>iProvide</a></li>
-							<li><a href="{{url_for('public')}}"><i class="icon-globe icon-white"></i>Public</a></li>
+							<li><a class="brand" href="{{url_for('index')}}">Gethem&nbsp;<small>beta</small></a></li>
+							<li id="home_tag"><a href="{{url_for('index')}}"><i class="icon-home icon-white"></i>Home</a></li>
+							<li id="need_tag"><a href="{{url_for('ineed')}}"><i class="icon-hand-right icon-white"></i>iNeed</a></li>
+							<li id="provide_tag"><a href="{{url_for('iprovide')}}"><i class="icon-thumbs-up icon-white"></i>iProvide</a></li>
+							<li id="public_tag"><a href="{{url_for('public')}}"><i class="icon-globe icon-white"></i>Public</a></li>
 							<li>
 								<form class="navbar-search">
 									<input type="text" class="search-query span2" placeholder="Search"><i class="icon-search icon-white"></i>

@@ -1,77 +1,72 @@
 {% extends "layout.html" %}
 
 {% block content %}
-  <div class="page-header">
-    <h1>iProvide</small></h1>
-  </div>
-  <div class="row">
-    <div class="span7">
-
-<h3> What do you provide {{ g.user.username }}?</h3>
-<div id="i-need-proxy">
-<table cellspacing='0' cellpadding='0' border="0">
-<tr>
-<td>
-I provide
-</td>
-<td><input id="provide_text_proxy" type="text" name='provide_text_proxy' onfocus='$("#i-need").show();'></td>
-</tr>
-</table>
+<div class="postbtn">
+	<a data-toggle="modal" href="#iprovide-post" class="btn btn-large btn-warning"><i class="icon-pencil icon-white"></i>&nbsp;Post an offer</a>
 </div>
 
-<div id="i-need" class="default-hidden">
-<div class="popover-close-box" id="popover-close-box" onclick="javascript:$('#i-need').hide();"></div>
-<form action="{{ url_for('add_provide') }}" method=post>
-<table cellspacing='0' cellpadding='0'>
-<tr>
-<td>
-I provide
-</td>
-<td><input id="provide_text" type="text" name='provide_title'></td>
-</tr>
-<tr>
-<td>Details</td>
-<td><textarea id="provide_content" name="provide_content" rows="4" cols="40"></textarea></td>
-</tr>
- 
-<tr>
-<td></td>
-<td>
-<button type='submit' id="submit_need_post">Post Provide</button>
-</td>
-</tr>
-</table>
-</form>
-</div>
-<div style="height:50px;">
+<div id="iprovide-post" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="iprovide-post-label" aria-hidden="true">
+	<form action="{{ url_for('add_provide') }}" method=post>
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times; </button>
+			<h3>Post your offer</h3>
+		</div>
+		<div class="modal-body">
+			<p style="text-align: left;">I provide:</p>
+			<input class="span6" type="text" name='provide_title' placeholder="Enter a title of your post ...">
+			<p style="text-align: left;">Details:</p>
+			<textarea class="span6" name="provide_content" placeholder="Enter you post details ..." rows="8"></textarea>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal">Close</button>
+			<button class="btn btn-primary" type="submit">Post it</button>
+		</div>
+	</form>
 </div>
 
-      <h3>My provides</h3>
-        <ul class=posts>
-        {% for provide in provides %}
-          <li>
-              <strong><a href="{{ url_for('user_page', username=provide.username) }}">{{ provide.username }}</a></strong> 
-              <a href="{{ url_for('provide_view', provideid=provide.provide_id) }}">{{ provide.provide_title }}</a>
-              <small>&mdash; {{ provide.provide_pub_date|datetimeformat }}</small>
-		  </li>
-        {% else %}
-          <li><em>There's no provides so far.</em></li>
-        {% endfor %}
-        </ul>
-    </div>
-    <div class="span7">
-      <h3>Their needs</h3>
-        <ul class=posts id='need_post'>
-        {% for need in needs %}
-          <li>
-              <strong><a href="{{ url_for('user_page', username=need.username) }}">{{ need.username }}</a></strong> 
-              <a href="{{ url_for('need_view', needid=need.need_id) }}">{{ need.need_title }}</a>
-              <small>&mdash; {{ need.need_pub_date|datetimeformat }}</small>
-		  </li>
-        {% else %}
-          <li><em>There's no provides so far.</em></li>
-        {% endfor %}
+<div class="container">
+	<div class="tabbable tabs-left">
+		<ul class="nav nav-tabs span4">
+			<div><h3>My Offers</h3></div>
+			<li style="text-align: left;" class="active"><a data-toggle="tab" href="#"><i class="icon-chevron-right"></i>All</a></li>
+			{% for i in range(provides|length) %}
+				<li style="text-align: left;"><a data-toggle="tab" href="#postprovides7"><i class="icon-chevron-right"></i>{{provides[i].provide_title}}</a></li>
+			{% endfor %}
 		</ul>
-    </div>
-  </div>
+		<div class="tab-content">
+			<div><h3>Their Needs</h3></div>
+			<div class="tab-pane active">
+				<div class="accordion" id="accordion2">
+					{% for j in range(needs|length) %}
+						<div class="accordion-group">
+							<div class="accordion-heading">
+								<div class="accordion-toggle" data-toggle="collapse" data-parent="accordion2" href="#postneeds{{j}}">
+									<table>
+										<tr>
+											<td style="width: 100px;"><img src="http://userserve-ak.last.fm/serve/500/6811139/Apple+Inc+Apple.png" width="120" height="120"></td>
+											<td style="width: 150px;"><a href="{{ url_for('need_view', needid=needs[j].need_id) }}">{{needs[j].need_title}}</a></td>
+											<td style="wdith: 150px;"><img src="http://userserve-ak.last.fm/serve/500/6811139/Apple+Inc+Apple.png" width="120" height="120"></td>
+										</tr>
+											<td style="width: 100px;"><a href="{{ url_for('user_page', username=needs[j].username) }}">{{needs[j].username}}</a></td>
+											<td style="width: 150px;"></td>
+											<td style="width: 150px;">{{needs[j].need_pub_date|datetimeformat}}</td>
+										<tr>
+									</table>
+								</div>
+							</div>
+							<div id="postneeds{{j}}" class="accordion-body collapse">
+								<div class="accordion-inner">
+									<p>{{needs[j].need_content}}</p>
+									<p style="text-align: right;">
+										<a class="btn btn-small" href="{{ url_for('need_view', needid=needs[j].need_id) }}">Read details</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}

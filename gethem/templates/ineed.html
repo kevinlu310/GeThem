@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="postbtn">
-	<a data-toggle="modal" href="#ineed-post" class="btn btn-large btn-primary">Post a Need</a>
+	<a data-toggle="modal" href="#ineed-post" class="btn btn-large btn-success"><i class="icon-pencil icon-white"></i>&nbsp;Post a Need</a>
 </div>
 
 <div id="ineed-post" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="ineed-post-label" aria-hidden="true">
@@ -28,12 +28,14 @@
 <div class="container">
 	<div class="tabbable tabs-left">
 		<ul class="nav nav-tabs span4">
-			<li class="active"><a data-toggle="tab" href="#"><i class="icon-chevron-right"></i>All</a></li>
+			<div><h3>My needs</h3></div>
+			<li style="text-align: left;" class="active"><a data-toggle="tab" href="#"><i class="icon-chevron-right"></i>All</a></li>
 			{% for i in range(needs|length) %}
-				<li><a data-toggle="tab" href="#postprovides7"><i class="icon-chevron-right"></i>{{needs[i].need_title}}</a></li>
+				<li style="text-align: left;"><a data-toggle="tab" href="#postprovides7"><i class="icon-chevron-right"></i>{{needs[i].need_title}}</a></li>
 			{% endfor %}
 		</ul>
 		<div class="tab-content">
+			<div><h3>Their offers</h3></div>
 			<div class="tab-pane active">
 				<div class="accordion" id="accordion2">
 					{% for j in range(provides|length) %}

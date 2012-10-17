@@ -314,16 +314,23 @@ def iprovide():
 	if profile_user is None:
 		abort(404)
 	if g.user:
-		my_provides=g.db.iter('''select provide.*, user.* from provide, user where
+		my_provides_iter=g.db.iter('''select provide.*, user.* from provide, user where
 			user.user_id = provide.provide_author_id and user.user_id = %s
 			order by provide.provide_pub_date desc limit 1000''',
 			profile_user['user_id'])
+		my_provides = []
+		for item in my_provides_iter:
+			my_provides.append(item)
 		
 		# TODO: bring matchdb's data here! Currently, only test UI.
 		#they_needs = g.db.iter('''select need.*, user.* from need, user limit 1000''')
-		they_needs=g.db.iter('''select need.*, user.* from need, user
+		they_needs_iter=g.db.iter('''select need.*, user.* from need, user
 						where need.need_author_id = user.user_id
 						order by need.need_pub_date desc limit 1000''')
+		they_needs = []
+		for item in they_needs_iter:
+			if item.user_id == profile_user['user_id']: continue
+			they_needs.append(item)
 
 	return render_template('iprovide.html', provides=my_provides, needs=they_needs)
 
