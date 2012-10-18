@@ -43,12 +43,12 @@
 								<div class="accordion-toggle" data-toggle="collapse" data-parent="accordion2" href="#postneeds{{j}}">
 									<table>
 										<tr>
-											<td style="width: 100px;"><img src="http://userserve-ak.last.fm/serve/500/6811139/Apple+Inc+Apple.png" width="120" height="120"></td>
-											<td style="width: 150px;"><a href="{{ url_for('need_view', needid=needs[j].need_id) }}">{{needs[j].need_title}}</a></td>
 											<td style="wdith: 150px;"><img src="http://userserve-ak.last.fm/serve/500/6811139/Apple+Inc+Apple.png" width="120" height="120"></td>
+											<td style="width: 50px;"><img src="http://userserve-ak.last.fm/serve/500/6811139/Apple+Inc+Apple.png" width="120" height="120"></td>
+											<td style="width: 150px;"><a href="{{ url_for('need_view', needid=needs[j].need_id) }}">{{needs[j].need_title}}</a></td>
 										</tr>
-											<td style="width: 100px;"><a href="{{ url_for('user_page', username=needs[j].username) }}">{{needs[j].username}}</a></td>
 											<td style="width: 150px;"></td>
+											<td style="width: 50px;"><a href="{{ url_for('user_page', username=needs[j].username) }}">{{needs[j].username}}</a></td>
 											<td style="width: 150px;">{{needs[j].need_pub_date|datetimeformat}}</td>
 										<tr>
 									</table>
