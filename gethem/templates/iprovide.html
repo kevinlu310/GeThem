@@ -40,7 +40,7 @@
 					{% for j in range(needs|length) %}
 						<div class="accordion-group">
 							<div class="accordion-heading">
-								<div class="accordion-toggle" data-toggle="collapse" data-parent="accordion2" href="#postneeds{{j}}">
+								<div onclick="$('#postneeds{{j}}').collapse('toggle')" style="cursor: pointer; cursor: hand;">
 									<table>
 										<tr>
 											<td style="width: 150px;"><img src="http://userserve-ak.last.fm/serve/500/6811139/Apple+Inc+Apple.png" width="120" height="120"></td>
