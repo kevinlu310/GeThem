@@ -40,3 +40,21 @@ create table matchpost (
   provide_id integer,
   score float(53,16)
 );
+
+drop table if exists needpic;
+create table needpic (
+  needpic_id integer primary key auto_increment,
+  needpic_url varchar(400) not null,
+  needpic_user_id integer,
+  need_id integer,
+  needpic_pub_date integer
+);
+
+drop table if exists providepic;
+create table providepic (
+  providepic_id integer primary key auto_increment,
+  providepic_url varchar(400) not null,
+  provdepic_user_id integer,
+  provide_id integer,
+  providepic_pub_date integer
+);
