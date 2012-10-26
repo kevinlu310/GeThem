@@ -1,8 +1,12 @@
 # This file is for TODO list tracking
+Todo for beta
 1.  Polishing UI of posts list viewing
-	1.1 Picture upload
-	1.2 Two column switching
-2.  Back-end matching engine
-	2.1 Data collection, Craigslist? Oodle?
-	2.2 Gensim integration
-3.  Location aware query implementation
+	1.1 Picture upload, display: carousel
+2.  Tag system, db table, UI buttons
+3.  Public, Home, Register, Profile, Forget password pages modify
+
+Todo for later
+1.  Back-end matching engine
+	1.1 Data collection, Craigslist? Oodle?
+	1.2 Gensim integration
+2.  Location aware query implementation
