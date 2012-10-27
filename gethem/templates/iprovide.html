@@ -6,16 +6,25 @@
 </div>
 
 <div id="iprovide-post" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="iprovide-post-label" aria-hidden="true">
-	<form action="{{ url_for('add_provide') }}" method=post>
+	<form action="{{ url_for('add_provide') }}" method=post enctype="multipart/form-data">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times; </button>
 			<h3>Post your offer</h3>
 		</div>
 		<div class="modal-body">
-			<p style="text-align: left;">I provide:</p>
-			<input class="span6" type="text" name='provide_title' placeholder="Enter a title of your post ...">
-			<p style="text-align: left;">Details:</p>
-			<textarea class="span6" name="provide_content" placeholder="Enter you post details ..." rows="8"></textarea>
+			<table>
+				<tr>
+					<td class="span2" style="text-align: left;">I provide:</td>
+					<td class="span6"><input class="span6" type="text" name='provide_title' placeholder="Enter a title of your post ..."></td>
+				</tr>
+				<tr>
+					<td class="span2" style="text-align: left;">Details:</td>
+					<td class="span6"><textarea class="span6" name="provide_content" placeholder="Enter you post details ..." rows="8"></textarea></td>
+				</tr>
+				<tr>
+					<td class="span2" style="text-align: left;">Images:</td>
+					<td class="span6"><p style="text-align: left;"><input type="file" name="provide_imgs" multiple/></p></td>
+			</table>
 		</div>
 		<div class="modal-footer">
 			<button class="btn" data-dismiss="modal">Close</button>
@@ -43,7 +52,7 @@
 								<div onclick="$('#postneeds{{j}}').collapse('toggle')" style="cursor: pointer; cursor: hand;">
 									<table>
 										<tr>
-											<td style="width: 150px;"><img src="http://userserve-ak.last.fm/serve/500/6811139/Apple+Inc+Apple.png" width="120" height="120"></td>
+											<td style="width: 150px;"><img src="{{ url_for('show_images', image_id=needs[j].images[0]) }}" width="120" height="120"></td>
 											<td style="width: 50px;"><img src="http://userserve-ak.last.fm/serve/500/6811139/Apple+Inc+Apple.png" width="120" height="120"></td>
 											<td style="width: 150px;"><a href="{{ url_for('need_view', needid=needs[j].need_id) }}">{{needs[j].need_title}}</a></td>
 											<td style="width: 150px;">{{needs[j].need_pub_date|datetimeformat}}</td>

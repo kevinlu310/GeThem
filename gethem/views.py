@@ -9,6 +9,7 @@ from flask import redirect
 from flask import abort
 from flask import flash
 from flask import send_from_directory
+from flask import send_file
 from flask import Blueprint
 from flask import Response
 from werkzeug import check_password_hash
@@ -26,6 +27,8 @@ import json
 import time
 import os
 import config
+import simplejson
+import hashlib
 
 # connect database
 def connect_db():
@@ -74,40 +77,12 @@ def close_connection(response):
 	g.user = None
 	return response
 
-#Show uploaded file
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-	return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
-#Upload file
-@app.route('/upload', methods=['GET', 'POST'])
-def upload_file():
-	if request.method == 'POST':
-		file = request.files['file']
-		if file and allowed_file(file.filename):
-			filename = secure_filename(file.filename)
-			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			return redirect(url_for('uploaded_file',
-									filename=filename))
-	return '''
-	<!doctype html>
-	<title>Upload new File</title>
-	<h1>Upload new File</h1>
-	<form action="" method=post enctype=multipart/form-data>
-	  <p><input type=file name=file>
-		 <input type=submit value=Upload>
-	</form>
-	'''
-# 
-# The followings handle:
-# 1. login
-# 2. register
-# 3. home, index, public, user_page
-# 4. logout
-#
-# ==
-# Note:
-# the main entry is index!
+@app.route('/images/<image_id>', methods=['GET', 'POST'])
+def show_images(image_id):
+	if not session['user_id']:
+		abort(400)
+	ext = image_id.split('.')[1]
+	return send_file('../uploads/' + image_id, mimetype='image/'+ext)
 
 @app.route('/')
 def index():
@@ -292,7 +267,6 @@ def ineed():
 		my_needs = []
 		for item in my_needs_iter:
 			my_needs.append(item)
-		print len(my_needs)
 		
 		# TODO: bring matchdb's data here! Currently, only test UI.
 		#they_provides = g.db.iter('''select provide.*, user.* from provide, user limit 1000''')
@@ -302,8 +276,17 @@ def ineed():
 		they_provides = []
 		for item in they_provides_iter:
 			if item.user_id == profile_user['user_id']: continue
+			postid = item['provide_id']
+			db2 = connect_db()
+			img_iter = db2.iter('''select provide_img.* from provide_img where
+			provide_img.provide_post_id = %s''', postid)
+			imgs = []
+			for img in img_iter:
+				imgs.append(img['uri'])
+			if len(imgs) == 0:
+				imgs = ['default.png']
+			item['images'] = imgs
 			they_provides.append(item)
-		print len(they_provides)
 	
 	return render_template('ineed.html', needs=my_needs, provides=they_provides)
 
@@ -330,6 +313,15 @@ def iprovide():
 		they_needs = []
 		for item in they_needs_iter:
 			if item.user_id == profile_user['user_id']: continue
+			db2 = connect_db()
+			img_iter = db2.iter('''select need_img.* from need_img where
+			need_img.need_post_id = %s''', item['need_id'])
+			imgs = []
+			for img in img_iter:
+				imgs.append(img['uri'])
+			if len(imgs) == 0:
+				imgs = ['default.png']
+			item['images'] = imgs
 			they_needs.append(item)
 
 	return render_template('iprovide.html', provides=my_provides, needs=they_needs)
@@ -340,11 +332,24 @@ def add_need():
 	if 'user_id' not in session:
 		abort(401)
 	if request.form['need_title']:
+		# insert post.
 		ts = time.time()
 		g.db.execute('''insert into need (need_author_id, need_title, need_content, need_pub_date)
 			values (%s, %s, %s, %s)''', session['user_id'], request.form['need_title'], request.form['need_content'],
 			  int(ts))
-
+			  
+		postid = g.db.get('''select * from need where need_author_id=%s and need_pub_date=%s''',
+										session['user_id'], int(ts))['need_id']
+		# insert image.
+		for f in request.files.getlist('need_imgs'):
+			if f and allowed_file(f.filename):
+				ext = '.' + f.filename.split('.')[1]
+				fname = hashlib.sha224(str(session['user_id']) + str(request.form['need_title']) \
+				+ str(request.form['need_content']) + f.filename + str(int(ts))).hexdigest() + ext
+				f.save('uploads/'+fname)
+				g.db.execute('''insert into need_img (need_post_id, uri) values (%s, %s)''', \
+										int(postid), fname)
+		
 		# pass msg to redis. Later push to clients.
 		title = request.form['need_title']
 		content = request.form['need_content']
@@ -376,6 +381,20 @@ def add_provide():
 			values (%s, %s, %s, %s)''', session['user_id'], request.form['provide_title'], request.form['provide_content'],
 			  int(ts))
 
+		postid = g.db.get('''select * from provide where provide_author_id=%s and provide_pub_date=%s''',
+										session['user_id'], int(ts))['provide_id']	
+		# insert image.
+		print request.files
+		print request.files.getlist('provide_imgs')
+		for f in request.files.getlist('provide_imgs'):
+			if f and allowed_file(f.filename):
+				ext = '.' + f.filename.split('.')[1]
+				fname = hashlib.sha224(str(session['user_id']) + str(request.form['provide_title']) \
+				+ str(request.form['provide_content']) + f.filename + str(int(ts))).hexdigest() + ext
+				f.save('uploads/'+fname)
+				g.db.execute('''insert into provide_img (provide_post_id, uri) values (%s, %s)''', \
+										int(postid), fname)
+										
 		# pass msg to redis. Later push to clients.
 		title = request.form['provide_title']
 		content = request.form['provide_content']

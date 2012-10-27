@@ -15,10 +15,11 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
-    <script type=text/javascript src="{{url_for('static', filename='js/bootstrap.js') }}"></script>
-    <script type=text/javascript src="{{url_for('static', filename='js/gethem.js') }}"></script>
-		<script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+    <script type=text/javascript src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+    <script type=text/javascript src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    <script type=text/javascript src="{{ url_for('static', filename='js/gethem.js') }}"></script>
+		<script type=text/javascript src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+		
 
 		<!-- The server push js -->
 		<script type="text/javascript">
