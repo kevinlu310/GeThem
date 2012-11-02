@@ -193,15 +193,43 @@ def user_page(username):
 		followed = g.db.get('''select * from follower where
 			follower.who_id = %s and follower.whom_id = %s''',
 			session['user_id'], target_user['user_id']) is not None
-		needs=g.db.iter('''select need.*, user.* from need, user where
-			user.user_id = need.need_author_id and user.user_id = %s
-			order by need.need_pub_date desc limit 1000''',
-			target_user['user_id'])
-		provides=g.db.iter('''select provide.*, user.* from provide, user where
+			
+		needs_iter = g.db.iter('''select need.*, user.* from need, user where
+														user.user_id = need.need_author_id and user.user_id = %s
+														order by need.need_pub_date desc limit 1000''',
+														target_user['user_id'])
+		needs = []
+		for item in needs_iter:
+			postid = item['need_id']
+			db2 = connect_db()
+			img_iter = db2.iter('''select need_img.* from need_img where
+													need_img.need_post_id = %s''', postid)
+			imgs = []
+			for img in img_iter:
+				imgs.append(img['uri'])
+			if len(imgs) == 0:
+				imgs = ['default.png']
+			item['images'] = imgs
+			needs.append(item)
+		
+		provides_iter = g.db.iter('''select provide.*, user.* from provide, user where
 			user.user_id = provide.provide_author_id and user.user_id = %s
 			order by provide.provide_pub_date desc limit 1000''',
 			target_user['user_id'])
-	
+		provides = []
+		for item in provides_iter:
+			postid = item['provide_id']
+			db2 = connect_db()
+			img_iter = db2.iter('''select provide_img.* from provide_img where
+													provide_img.provide_post_id = %s''', postid)
+			imgs = []
+			for img in img_iter:
+				imgs.append(img['uri'])
+			if len(imgs) == 0:
+				imgs = ['default.png']
+			item['images'] = imgs
+			provides.append(item)
+		
 	return render_template('user_page.html', needs=needs, provides=provides,
 						   followed=followed, target_user=target_user)
 
