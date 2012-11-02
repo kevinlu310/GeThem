@@ -1,9 +1,11 @@
 # This file is for TODO list tracking
 Todo for beta
-1.  Polishing UI of posts list viewing
-	1.1 Picture upload, display: carousel
-2.  Tag system, db table, UI buttons
-3.  Public, Home, Register, Profile, Forget password pages modify
+1.  Polishing UI of posts list viewing (11/6)
+	1.1 Picture upload(done), display: carousel
+2.  Tag system, db table, UI buttons(done)
+3.  Public(done), Home(done), Register, Profile, Forget password pages modify (11/6)
+4.  "Offer" or "provide"
+5.  publish button
 
 Todo for later
 1.  Back-end matching engine
