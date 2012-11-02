@@ -99,12 +99,40 @@ def home(userid):
 	if profile_user is None:
 		abort(404)
 	if session['user_id'] == profile_user['user_id']:
-		needs=g.db.iter('''select need.*, user.* from need, user where
+		needs_iter = g.db.iter('''select need.*, user.* from need, user where
 					user.user_id = need.need_author_id and user.user_id = %s
 					order by need.need_pub_date desc limit 1000''', userid)
-		provides=g.db.iter('''select provide.*, user.* from provide, user where
+		needs = []
+		for item in needs_iter:
+			postid = item['need_id']
+			db2 = connect_db()
+			img_iter = db2.iter('''select need_img.* from need_img where
+			need_img.need_post_id = %s''', postid)
+			imgs = []
+			for img in img_iter:
+				imgs.append(img['uri'])
+			if len(imgs) == 0:
+				imgs = ['default.png']
+			item['images'] = imgs
+			needs.append(item)
+			
+		provides_iter = g.db.iter('''select provide.*, user.* from provide, user where
 					user.user_id = provide.provide_author_id and user.user_id = %s
 					order by provide.provide_pub_date desc limit 1000''', userid)
+		provides = []
+		for item in provides_iter:
+			postid = item['provide_id']
+			db2 = connect_db()
+			img_iter = db2.iter('''select provide_img.* from provide_img where
+			provide_img.provide_post_id = %s''', postid)
+			imgs = []
+			for img in img_iter:
+				imgs.append(img['uri'])
+			if len(imgs) == 0:
+				imgs = ['default.png']
+			item['images'] = imgs
+			provides.append(item)
+			
 		return render_template('home.html', needs=needs, provides=provides)
 	else:
 		# TODO bug here, behavior not expected
@@ -113,12 +141,40 @@ def home(userid):
 @app.route('/all')
 def public():
 	"""Displays needs and provides of all users."""
-	needs=g.db.iter('''select need.*, user.* from need, user
+	needs_iter = g.db.iter('''select need.*, user.* from need, user
 					where need.need_author_id = user.user_id
 					order by need.need_pub_date desc limit 1000''')
-	provides=g.db.iter('''select provide.*, user.* from provide, user
+	needs = []
+	for item in needs_iter:
+		postid = item['need_id']
+		db2 = connect_db()
+		img_iter = db2.iter('''select need_img.* from need_img where
+												need_img.need_post_id = %s''', postid)
+		imgs = []
+		for img in img_iter:
+			imgs.append(img['uri'])
+		if len(imgs) == 0:
+			imgs = ['default.png']
+		item['images'] = imgs
+		needs.append(item)
+	
+	provides_iter = g.db.iter('''select provide.*, user.* from provide, user
 					where provide.provide_author_id = user.user_id
 					order by provide.provide_pub_date desc limit 1000''')
+	provides = []
+	for item in provides_iter:
+		postid = item['provide_id']
+		db2 = connect_db()
+		img_iter = db2.iter('''select provide_img.* from provide_img where
+												provide_img.provide_post_id = %s''', postid)
+		imgs = []
+		for img in img_iter:
+			imgs.append(img['uri'])
+		if len(imgs) == 0:
+			imgs = ['default.png']
+		item['images'] = imgs
+		provides.append(item)
+	
 	return render_template('public.html', needs=needs, provides=provides)
 
 @app.route('/u/<username>/')

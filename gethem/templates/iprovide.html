@@ -57,10 +57,11 @@
 											<td style="width: 150px;"><a href="{{ url_for('need_view', needid=needs[j].need_id) }}">{{needs[j].need_title}}</a></td>
 											<td style="width: 150px;">{{needs[j].need_pub_date|datetimeformat}}</td>
 										</tr>
+										<tr>
 											<td style="width: 150px;"></td>
 											<td style="width: 50px;"><a href="{{ url_for('user_page', username=needs[j].username) }}">{{needs[j].username}}</a></td>
 											<td style="width: 300px;" colspan="2">{{needs[j].need_content}}</td>
-										<tr>
+										</tr>
 									</table>
 								</div>
 							</div>
