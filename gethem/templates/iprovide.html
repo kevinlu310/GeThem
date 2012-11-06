@@ -15,11 +15,11 @@
 			<table>
 				<tr>
 					<td class="span2" style="text-align: left;">I provide:</td>
-					<td class="span6"><input class="span6" type="text" name='provide_title' placeholder="Enter a title of your post ..."></td>
+					<td class="span6"><input class="span6" type="text" name='provide_title' placeholder="Enter a title of your post ..." maxlength="70"></td>
 				</tr>
 				<tr>
 					<td class="span2" style="text-align: left;">Details:</td>
-					<td class="span6"><textarea class="span6" name="provide_content" placeholder="Enter you post details ..." rows="8"></textarea></td>
+					<td class="span6"><textarea class="span6" name="provide_content" placeholder="Enter you post details ..." rows="8" maxlength="1000"></textarea></td>
 				</tr>
 				<tr>
 					<td class="span2" style="text-align: left;">Images:</td>
@@ -60,14 +60,14 @@
 										<tr>
 											<td style="width: 150px;"></td>
 											<td style="width: 50px;"><a href="{{ url_for('user_page', username=needs[j].username) }}">{{needs[j].username}}</a></td>
-											<td style="width: 300px;" colspan="2">{{needs[j].need_content}}</td>
+											<td style="width: 300px;" colspan="2"><p style="width: 300px; word-wrap: break-word; text-align:left;">{{needs[j].need_content}}</p></td>
 										</tr>
 									</table>
 								</div>
 							</div>
 							<div id="postneeds{{j}}" class="accordion-body collapse">
 								<div class="accordion-inner">
-									<p>{{needs[j].need_content}}</p>
+									<p style="width: 500px; word-wrap: break-word; text-align: left;">{{needs[j].need_content}}</p>
 									<p style="text-align: right;">
 										<a class="btn btn-small" href="{{ url_for('need_view', needid=needs[j].need_id) }}">Read details</a>
 									</p>

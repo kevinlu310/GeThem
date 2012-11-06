@@ -114,6 +114,10 @@ def home(userid):
 			if len(imgs) == 0:
 				imgs = ['default.png']
 			item['images'] = imgs
+			if len(item['need_title']) > config.TITLE_LENGTH:
+				item['need_title'] = item['need_title'][0:config.TITLE_LENGTH]
+			if len(item['need_content']) > config.CONTENT_LENGTH:
+				item['need_content'] = item['need_content'][0:config.CONTENT_LENGTH]
 			needs.append(item)
 			
 		provides_iter = g.db.iter('''select provide.*, user.* from provide, user where
@@ -131,6 +135,10 @@ def home(userid):
 			if len(imgs) == 0:
 				imgs = ['default.png']
 			item['images'] = imgs
+			if len(item['provide_title']) > config.TITLE_LENGTH:
+				item['provide_title'] = item['provide_title'][0:config.TITLE_LENGTH]
+			if len(item['provide_content']) > config.CONTENT_LENGTH:
+				item['provide_content'] = item['provide_content'][0:config.CONTENT_LENGTH]
 			provides.append(item)
 			
 		return render_template('home.html', needs=needs, provides=provides)
@@ -156,6 +164,10 @@ def public():
 		if len(imgs) == 0:
 			imgs = ['default.png']
 		item['images'] = imgs
+		if len(item['need_title']) > config.TITLE_LENGTH:
+			item['need_title'] = item['need_title'][0:config.TITLE_LENGTH]
+		if len(item['need_content']) > config.CONTENT_LENGTH:
+			item['need_content'] = item['need_content'][0:config.CONTENT_LENGTH]
 		needs.append(item)
 	
 	provides_iter = g.db.iter('''select provide.*, user.* from provide, user
@@ -173,6 +185,10 @@ def public():
 		if len(imgs) == 0:
 			imgs = ['default.png']
 		item['images'] = imgs
+		if len(item['provide_title']) > config.TITLE_LENGTH:
+			item['provide_title'] = item['provide_title'][0:config.TITLE_LENGTH]
+		if len(item['provide_content']) > config.CONTENT_LENGTH:
+			item['provide_content'] = item['provide_content'][0:config.CONTENT_LENGTH]
 		provides.append(item)
 	
 	return render_template('public.html', needs=needs, provides=provides)
@@ -210,6 +226,10 @@ def user_page(username):
 			if len(imgs) == 0:
 				imgs = ['default.png']
 			item['images'] = imgs
+			if len(item['need_title']) > config.TITLE_LENGTH:
+				item['need_title'] = item['need_title'][0:config.TITLE_LENGTH]
+			if len(item['need_content']) > config.CONTENT_LENGTH:
+				item['need_content'] = item['need_content'][0:config.CONTENT_LENGTH]
 			needs.append(item)
 		
 		provides_iter = g.db.iter('''select provide.*, user.* from provide, user where
@@ -228,6 +248,10 @@ def user_page(username):
 			if len(imgs) == 0:
 				imgs = ['default.png']
 			item['images'] = imgs
+			if len(item['provide_title']) > config.TITLE_LENGTH:
+				item['provide_title'] = item['provide_title'][0:config.TITLE_LENGTH]
+			if len(item['provide_content']) > config.CONTENT_LENGTH:
+				item['provide_content'] = item['provide_content'][0:config.CONTENT_LENGTH]
 			provides.append(item)
 		
 	return render_template('user_page.html', needs=needs, provides=provides,
@@ -350,6 +374,8 @@ def ineed():
 			profile_user['user_id'])
 		my_needs = []
 		for item in my_needs_iter:
+			if len(item['need_title']) > config.SIDE_TITLE_LENGTH:
+				item['need_title'] = item['need_title'][0:config.SIDE_TITLE_LENGTH]
 			my_needs.append(item)
 		
 		# TODO: bring matchdb's data here! Currently, only test UI.
@@ -370,6 +396,10 @@ def ineed():
 			if len(imgs) == 0:
 				imgs = ['default.png']
 			item['images'] = imgs
+			if len(item['provide_title']) > config.TITLE_LENGTH:
+				item['provide_title'] = item['provide_title'][0:config.TITLE_LENGTH]
+			if len(item['provide_content']) > config.CONTENT_LENGTH:
+				item['provide_content'] = item['provide_content'][0:config.CONTENT_LENGTH]
 			they_provides.append(item)
 	
 	return render_template('ineed.html', needs=my_needs, provides=they_provides)
@@ -387,6 +417,8 @@ def iprovide():
 			profile_user['user_id'])
 		my_provides = []
 		for item in my_provides_iter:
+			if len(item['provide_title']) > config.SIDE_TITLE_LENGTH:
+				item['provide_title'] = item['provide_title'][0:config.SIDE_TITLE_LENGTH]
 			my_provides.append(item)
 		
 		# TODO: bring matchdb's data here! Currently, only test UI.
@@ -406,6 +438,10 @@ def iprovide():
 			if len(imgs) == 0:
 				imgs = ['default.png']
 			item['images'] = imgs
+			if len(item['need_title']) > config.TITLE_LENGTH:
+				item['need_title'] = item['need_title'][0:config.TITLE_LENGTH]
+			if len(item['need_content']) > config.CONTENT_LENGTH:
+				item['need_content'] = item['need_content'][0:config.CONTENT_LENGTH]
 			they_needs.append(item)
 
 	return render_template('iprovide.html', provides=my_provides, needs=they_needs)
