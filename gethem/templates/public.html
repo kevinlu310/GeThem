@@ -4,8 +4,8 @@
 <div class="tab-pane" id="pills-basic">
 	<div class="tabbable">
 		<ul class="nav nav-pills">
-			<li class="active"><a href="#my_needs" data-toggle="tab">My Needs</a></li>
-			<li><a href="#my_provides" data-toggle="tab">My Provides</a></li>
+			<li class="active"><a href="#my_needs" data-toggle="tab">Public Needs</a></li>
+			<li><a href="#my_provides" data-toggle="tab">Public Provides</a></li>
 		</ul>
 		
 		<div class="tab-content">
@@ -25,7 +25,7 @@
 										<tr>
 											<td style="width: 150px;"></td>
 											<td style="width: 50px;"><a href="{{ url_for('user_page', username=needs[j].username) }}">{{needs[j].username}}</a></td>
-											<td style="width: 300px;" colspan="2"><p style="wdith: 300px; text-wrap: break-word; text-align: left;">{{needs[j].need_content}}</p></td>
+											<td style="width: 300px;" colspan="2"><p style="width: 300px; word-wrap: break-word; text-align: left;">{{needs[j].need_content}}</p></td>
 										</tr>
 									</table>
 								</div>
