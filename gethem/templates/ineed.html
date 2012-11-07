@@ -2,38 +2,6 @@
 
 {% block content %}
 
-<div class="postbtn">
-	<a data-toggle="modal" href="#ineed-post" class="btn btn-large btn-success"><i class="icon-pencil icon-white"></i>&nbsp;Post a Need</a>
-</div>
-
-<div id="ineed-post" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="ineed-post-label" aria-hidden="true">
-	<form action="{{ url_for('add_need') }}" method=post enctype="multipart/form-data">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times; </button>
-			<h3>Post your need.</h3>
-		</div>
-		<div class="modal-body">
-			<table>
-				<tr>
-					<td class="span2" style="text-align: left;">I need:</td>
-					<td class="span6"><input class="span6" type="text" name='need_title' placeholder="Enter a title of your post ..." maxlength="70"></td>
-				</tr>
-				<tr>
-					<td class="span2" style="text-align: left;">Details:</td>
-					<td class="span6"><textarea class="span6" name="need_content" placeholder="Enter you post details ..." rows="8" maxlengh="1000"></textarea></td>
-				</tr>
-				<tr>
-					<td class="span2" style="text-align: left;">Images:</td>
-					<td class="span6"><p style="text-align: left;"><input type="file" name="need_imgs" multiple/></p></td>
-			</table>
-		</div>
-		<div class="modal-footer">
-			<button class="btn" data-dismiss="modal">Close</button>
-			<button class="btn btn-primary" type="submit">Post it</button>
-		</div>
-	</form>
-</div>
-
 <div class="container">
 	<div class="tabbable tabs-left">
 		<ul class="nav nav-tabs span4">

@@ -272,7 +272,7 @@ def login():
 									 request.form['password']):
 			error = 'Invalid password'
 		else:
-			flash('You were logged in')
+			#flash('You were logged in')
 			session['user_id'] = user['user_id']
 			return redirect(url_for('home', userid=session['user_id']))
 	return render_template('login.html', error=error)
@@ -300,14 +300,17 @@ def register():
 				username, email, pw_hash) values(%s, %s, %s)''', \
 				request.form['username'], request.form['email'], \
 				generate_password_hash(request.form['password']))
-			flash('You were successfully registered and can login now')
-			return redirect(url_for('login'))
-	return render_template('register.html', error=error)
+			#flash('You were successfully registered and can login now')
+			user = g.db.get('''select * from user where
+			username = %s''', request.form['username'])
+			session['user_id'] = user['user_id']
+			return redirect(url_for('home', userid=session['user_id']))
+	return render_template('login.html', error=error)
 
 @app.route('/logout')
 def logout():
 	"""Logs the user out."""
-	flash('You were logged out.')
+	#flash('You were logged out.')
 	session.pop('user_id', None)
 	return redirect(url_for('index'))
 

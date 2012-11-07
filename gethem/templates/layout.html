@@ -176,6 +176,13 @@
 							</li>
 						</ul>
 						<ul class="nav pull-right">
+							<li class="btn-group">
+                <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="icon-pencil icon-white"></i>Post <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                  <li><a href="#ineed-post" data-toggle="modal">A Need</a></li>
+                  <li><a href="#iprovide-post" data-toggle="modal">An Offer</a></li>
+                </ul>
+              </li>
 							<li class="dropdown">
 								<a class="dropdown-toggle" data-toggle="dropdown" href="">
 									<i class="icon-cog icon-white"></i>Account<b class="caret"></b>
@@ -192,6 +199,62 @@
 				</div>
 			</div><!-- /navbar-inner -->
 		</div><!-- /navbar -->
+
+		<div id="iprovide-post" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="iprovide-post-label" aria-hidden="true">
+			<form action="{{ url_for('add_provide') }}" method=post enctype="multipart/form-data">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times; </button>
+					<h3>Post your offer</h3>
+				</div>
+				<div class="modal-body">
+					<table>
+						<tr>
+							<td class="span2" style="text-align: left;">I provide:</td>
+							<td class="span6"><input class="span6" type="text" name='provide_title' placeholder="Enter a title of your post ..." maxlength="70"></td>
+						</tr>
+						<tr>
+							<td class="span2" style="text-align: left;">Details:</td>
+							<td class="span6"><textarea class="span6" name="provide_content" placeholder="Enter you post details ..." rows="8" maxlength="1000"></textarea></td>
+						</tr>
+						<tr>
+							<td class="span2" style="text-align: left;">Images:</td>
+							<td class="span6"><p style="text-align: left;"><input type="file" name="provide_imgs" multiple/></p></td>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal">Close</button>
+					<button class="btn btn-primary" type="submit">Offer it!</button>
+				</div>
+			</form>
+		</div>
+		
+		<div id="ineed-post" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="ineed-post-label" aria-hidden="true">
+			<form action="{{ url_for('add_need') }}" method=post enctype="multipart/form-data">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times; </button>
+					<h3>Post your need.</h3>
+				</div>
+				<div class="modal-body">
+					<table>
+						<tr>
+							<td class="span2" style="text-align: left;">I need:</td>
+							<td class="span6"><input class="span6" type="text" name='need_title' placeholder="Enter a title of your post ..." maxlength="70"></td>
+						</tr>
+						<tr>
+							<td class="span2" style="text-align: left;">Details:</td>
+							<td class="span6"><textarea class="span6" name="need_content" placeholder="Enter you post details ..." rows="8" maxlengh="1000"></textarea></td>
+						</tr>
+						<tr>
+							<td class="span2" style="text-align: left;">Images:</td>
+							<td class="span6"><p style="text-align: left;"><input type="file" name="need_imgs" multiple/></p></td>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal">Close</button>
+					<button class="btn btn-primary" type="submit">Get it!</button>
+				</div>
+			</form>
+		</div>
 
   	<div class="container">
 			{% with flashes = get_flashed_messages() %}
