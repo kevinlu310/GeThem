@@ -86,8 +86,8 @@
 				</a>
 				<div class="nav-collapse subnav-collapse">
 					<ul class="nav">
-						<li class="active"><a class="brand" href="#">Gethem</a></li>
-						<li><a href="{{url_for('public')}}"><i class="icon-globe icon-white"></i><strong>Public</strong></a></li>
+						<li class="active"><a class="brand" href="#">GeThem</a></li>
+						<li><a href="{{url_for('open_public')}}"><i class="icon-globe icon-white"></i><strong>Public</strong></a></li>
 					</ul>
 					<form class="navbar-form pull-right" action="" method="post">
           	<input class="input" type="text" name="username" placeholder="Username" size=30 value="{{request.form.username}}">
@@ -125,27 +125,26 @@
 			</div>
 			<div class="span5">
 				<div style="text-align: left;">
-					<h4>Sign Up!</h4>
-					<p>It's free and will always be.</p>
+					<h4>Signing up is free and always will be!</h4>
 					<hr style="color: #abc;"/>
 				</div>
 				<form action="{{ url_for('register') }}" method="post">
         	<table>
         		<tr style="text-align: left;">
         			<td>Your Username:</td>
-        			<td><input type=text name=username size=35></td>
+        			<td><input type=text name=username size=45></td>
         		</tr>
         		<tr style="text-align: left;">
         			<td>Your Email:</td>
-        			<td><input type=text name=email size=35></td>
+        			<td><input type=text name=email size=45></td>
         		</tr>
         		<tr style="text-align: left;">
         			<td>Password:</td>
-        			<td><input type=password name=password size=35></td>
+        			<td><input type=password name=password size=45></td>
         		</tr>
         		<tr style="text-align: left;">
         			<td>Re-enter Password:</td>
-        			<td><input type=password name=password2 size=35></td>
+        			<td><input type=password name=password2 size=45></td>
         		</tr>
         	</table>
         	<p style="text-align: left;"><small>By clicking Sign Up, you agree to our Terms and that you have read our Data Use Policy, including our Cookie Use.</small></p>
@@ -156,6 +155,7 @@
 	</div>
         
 	<div class="container">
+		<hr />
 		<table class="center">
    		<tr>
        	<td>
