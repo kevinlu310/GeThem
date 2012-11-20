@@ -148,7 +148,7 @@ def home(userid):
 
 @app.route('/all')
 def public():
-	"""Displays needs and provides of all users."""
+	"""Displays needs and provides of all users when a user logins in."""
 	needs_iter = g.db.iter('''select need.*, user.* from need, user
 					where need.need_author_id = user.user_id
 					order by need.need_pub_date desc limit 1000''')
@@ -193,9 +193,9 @@ def public():
 	
 	return render_template('public.html', needs=needs, provides=provides)
 
-@app.route('/public')
+@app.route('/public', methods=['GET', 'POST'])
 def open_public():
-	"""Displays needs and provides of all users."""
+	"""Displays needs and provides of all users when a user doesn't login."""
 	needs_iter = g.db.iter('''select need.*, user.* from need, user
 					where need.need_author_id = user.user_id
 					order by need.need_pub_date desc limit 1000''')
@@ -237,6 +237,21 @@ def open_public():
 		if len(item['provide_content']) > config.CONTENT_LENGTH:
 			item['provide_content'] = item['provide_content'][0:config.CONTENT_LENGTH]
 		provides.append(item)
+
+	error = None
+	if request.method == 'POST':
+		user = g.db.get('''select * from user where
+			username = %s''', request.form['username'])
+		if user is None:
+			error = 'Invalid username'
+		elif not check_password_hash(user['pw_hash'],
+									request.form['password']):
+			error = 'Invalid password'
+		else:
+			session['user_id'] = user['user_id']
+			return redirect(url_for('home', userid=session['user_id']))
+		return render_template('login.html', error=error)
+
 	
 	return render_template('open_public.html', needs=needs, provides=provides)
 
