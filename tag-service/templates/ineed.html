@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container">
+	<div class="tabbable tabs-left">
+		<ul class="nav nav-tabs span4">
+			<div><h3>My needs</h3></div>
+			<li style="text-align: left;" class="active"><a data-toggle="tab" href="#"><i class="icon-chevron-right"></i>All</a></li>
+			{% for i in range(needs|length) %}
+				<li style="text-align: left;"><a data-toggle="tab" href="#postprovides7"><i class="icon-chevron-right"></i>{{needs[i].need_title}}</a></li>
+			{% endfor %}
+		</ul>
+		<div class="tab-content">
+			<div><h3>Their offers</h3></div>
+			<div class="tab-pane active">
+				<div class="accordion" id="accordion2">
+					{% for j in range(provides|length) %}
+						<div class="accordion-group">
+							<div class="accordion-heading">
+								<div onclick="$('#postprovides{{j}}').collapse('toggle')" style="cursor: pointer; cursor: hand;">
+									<table>
+										<tr>
+											<td style="width: 150px;"><img src="{{ url_for('show_images', image_id=provides[j].images[0]) }}" width="120" height="120"></td>
+											<td style="width: 50px;"><img src="http://www.google.com/images/srpr/logo3w.png" width="120" height="120"></td>
+											<td style="width: 150px;"><a href="{{ url_for('provide_view', provideid=provides[j].provide_id) }}">{{provides[j].provide_title}}</a></td>
+											<td style="wdith: 150px;"><img src="http://www.google.com/images/imagessrpr/logo3w.png" width="120" height="120"></td>
+										</tr>
+										<tr>
+											<td style="width: 150px;"></td>
+											<td style="width: 50px;"><a href="{{ url_for('user_page', username=provides[j].username) }}">{{provides[j].username}}</a></td>
+											<td style="width: 300px;" colspan="2"><p style="width: 300px; word-wrap: break-word; text-align: left;">{{provides[j].provide_content}}</p></td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<div id="postprovides{{j}}" class="accordion-body collapse">
+								<div class="accordion-inner">
+									<p style="width: 500px; text-wrap: break-word; text-align: left;">{{provides[j].provide_content}}</p>
+									<p style="text-align: right;">
+										<a class="btn btn-small" href="{{ url_for('provide_view', provideid=provides[j].provide_id) }}">Read details</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

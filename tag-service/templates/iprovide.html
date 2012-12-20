@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container">
+	<div class="tabbable tabs-left">
+		<ul class="nav nav-tabs span4">
+			<div><h3>My Offers</h3></div>
+			<li style="text-align: left;" class="active"><a data-toggle="tab" href="#"><i class="icon-chevron-right"></i>All</a></li>
+			{% for i in range(provides|length) %}
+				<li style="text-align: left;"><a data-toggle="tab" href="#postprovides7"><i class="icon-chevron-right"></i>{{provides[i].provide_title}}</a></li>
+			{% endfor %}
+		</ul>
+		<div class="tab-content">
+			<div><h3>Their Needs</h3></div>
+			<div class="tab-pane active">
+				<div class="accordion" id="accordion2">
+					{% for j in range(needs|length) %}
+						<div class="accordion-group">
+							<div class="accordion-heading">
+								<div onclick="$('#postneeds{{j}}').collapse('toggle')" style="cursor: pointer; cursor: hand;">
+									<table>
+										<tr>
+											<td style="width: 150px;"><img src="{{ url_for('show_images', image_id=needs[j].images[0]) }}" width="120" height="120"></td>
+											<td style="width: 50px;"><img src="http://userserve-ak.last.fm/serve/500/6811139/Apple+Inc+Apple.png" width="120" height="120"></td>
+											<td style="width: 150px;"><a href="{{ url_for('need_view', needid=needs[j].need_id) }}">{{needs[j].need_title}}</a></td>
+											<td style="width: 150px;">{{needs[j].need_pub_date|datetimeformat}}</td>
+										</tr>
+										<tr>
+											<td style="width: 150px;"></td>
+											<td style="width: 50px;"><a href="{{ url_for('user_page', username=needs[j].username) }}">{{needs[j].username}}</a></td>
+											<td style="width: 300px;" colspan="2"><p style="width: 300px; word-wrap: break-word; text-align:left;">{{needs[j].need_content}}</p></td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<div id="postneeds{{j}}" class="accordion-body collapse">
+								<div class="accordion-inner">
+									<p style="width: 500px; word-wrap: break-word; text-align: left;">{{needs[j].need_content}}</p>
+									<p style="text-align: right;">
+										<a class="btn btn-small" href="{{ url_for('need_view', needid=needs[j].need_id) }}">Read details</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

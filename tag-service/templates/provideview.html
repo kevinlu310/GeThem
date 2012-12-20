@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<table width="100%">
+<tr>
+<td rowspan="3" width="20%">
+<img src="{{ url_for('static',filename='img/info.png') }}">
+</td>
+<td style="font-size:25px;">{{ provide.provide_text }}</td>
+</tr>
+<tr>
+<td><h6>{{ provide.username }}&mdash; {{ provide.provide_pub_date|datetimeformat }}</h6></td>
+</tr>
+<tr>
+<td><h4>{{ provide.provide_content }}</h4></td>
+</tr>
+</table>
+<a href="javascript:history.go(-1);">Back</a>
+
+
+{% endblock %}
