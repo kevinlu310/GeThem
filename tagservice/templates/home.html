@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <!--
+  <div class="page-header">
+    <h1>Home</small></h1>
+  </div>
+  -->
+<div class="tab-pane" id="pills-basic">
+	<div class="tabbable">
+		<ul class="nav nav-pills">
+			<li class="active"><a href="#my_needs" data-toggle="tab">My Needs</a></li>
+			<li><a href="#my_provides" data-toggle="tab">My Provides</a></li>
+		</ul>
+		
+		<div class="tab-content">
+			<div id="my_needs" class="tab-pane active">
+				<div class="accordion" id="accordion1">
+					{% for j in range(needs|length) %}
+						<div class="accordion-group">
+							<div class="accordion-heading">
+								<div onclick="$('#postneeds{{j}}').collapse('toggle')" style="cursor: pointer; cursor: hand;">
+									<table>
+										<tr>
+											<td style="width: 150px;"><img src="{{ url_for('show_images', image_id=needs[j].images[0]) }}" width="120" height="120"></td>
+											<td style="width: 50px;"><img src="http://userserve-ak.last.fm/serve/500/6811139/Apple+Inc+Apple.png" width="120" height="120"></td>
+											<td style="width: 150px;"><a href="{{ url_for('need_view', needid=needs[j].need_id) }}">{{needs[j].need_title}}</a></td>
+											<td style="width: 150px;">{{needs[j].need_pub_date|datetimeformat}}</td>
+										</tr>
+										<tr>
+											<td style="width: 150px;"></td>
+											<td style="width: 50px;"><a href="{{ url_for('user_page', username=needs[j].username) }}">{{needs[j].username}}</a></td>
+											<td style="width: 300px;" colspan="2"><p style="width: 300px; word-wrap: break-word; text-align: left;">{{needs[j].need_content}}</p></td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<div id="postneeds{{j}}" class="accordion-body collapse">
+								<div class="accordion-inner">
+									<p style="width: 300px; word-wrap: break-word; text-align: left;">{{needs[j].need_content}}</p>
+									<p style="text-align: right;">
+										<a class="btn btn-small" href="{{ url_for('need_view', needid=needs[j].need_id) }}">Read details</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+			
+			<div id="my_provides" class="tab-pane">
+				<div class="accordion" id="accordion2">
+					{% for i in range(provides|length) %}
+						<div class="accordion-group">
+							<div class="accordion-heading">
+								<div onclick="$('#postprovides{{i}}').collapse('toggle')" style="cursor: pointer; cursor: hand;">
+									<table>
+										<tr>
+											<td style="width: 150px;"><img src="{{ url_for('show_images', image_id=provides[i].images[0]) }}" width="120" height="120"></td>
+											<td style="width: 50px;"><img src="http://www.google.com/images/srpr/logo3w.png" width="120" height="120"></td>
+											<td style="width: 150px;"><a href="{{ url_for('provide_view', provideid=provides[i].provide_id) }}">{{provides[i].provide_title}}</a></td>
+											<td style="wdith: 150px;"><img src="http://www.google.com/images/imagessrpr/logo3w.png" width="120" height="120"></td>
+										</tr>
+										<tr>
+											<td style="width: 150px;"></td>
+											<td style="width: 50px;"><a href="{{ url_for('user_page', username=provides[i].username) }}">{{provides[i].username}}</a></td>
+											<td style="width: 300px;" colspan="2"><p style="width: 300px; text-wrap: break-word; text-align: left;">{{provides[i].provide_content}}</p></td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<div id="postprovides{{i}}" class="accordion-body collapse">
+								<div class="accordion-inner">
+									<p style="width: 300px; text-wrap: break-word; text-align: left;">{{provides[i].provide_content}}</p>
+										<p style="text-align: right;">
+										<a class="btn btn-small" href="{{ url_for('provide_view', provideid=provides[i].provide_id) }}">Read details</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
