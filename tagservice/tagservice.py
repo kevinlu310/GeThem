@@ -15,16 +15,13 @@ from tornado.ioloop import IOLoop
 from tornado.web import FallbackHandler
 from tornado.web import RequestHandler
 from tornado.web import Application
-from sockjs.tornado import SockJSConnection
-from sockjs.tornado import SockJSRouter
-import tornadoredis
+import tagservice
 import argparse
 import sys
-import tagservice
 
 if __name__ == "__main__":
-	# app server.
-	m = WSGIContainer(gethem.app)
+	# tag server.
+	m = WSGIContainer(tagservice.app)
 	app_main = Application([(r".*", FallbackHandler, {'fallback':m})])
 	app_main.listen(8001)
 	IOLoop.instance().start()

@@ -1,14 +1,21 @@
+'''
+Initialize the tag service.
+Load static tags into memory.
+'''
+#TODO: dynamic tag service.
+
 from flask import Flask
-from redis import StrictRedis
-import config
+from csv import reader
 app = Flask(__name__)
 
-UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = config.SECRET_KEY
-app.config['DEBUG'] = 'true'
+tags_dict = {}
+STATIC_TAG_DIR = 'static_tag.csv'
+rd = reader(open(STATIC_TAG_DIR, 'r'), delimiter=',')
+for item in rd:
+	if item[0] not in tags_dict.keys():
+		tags_dict[item[0]] = []
+	tags_dict[item[0]].append(item[1])
 
-red = StrictRedis()
+print tags_dict
 
-from gethem import views
+import views
