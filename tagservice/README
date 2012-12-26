@@ -1,0 +1,6 @@
+Simply execute the following command:
+
+$ python server.py
+
+It start a RESTful API at the following URL:
+http://<host>:8001/tags/<key>

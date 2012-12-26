@@ -1,0 +1,6 @@
+Simply run the following command:
+
+$ python runserver.py
+
+It host the main application at the following URL:
+http://www.gethem.com:8000

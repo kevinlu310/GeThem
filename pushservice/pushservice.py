@@ -19,7 +19,6 @@ from sockjs.tornado import SockJSRouter
 import tornadoredis
 import argparse
 import sys
-import gethem
 
 class NotificationConnection(SockJSConnection):
 	clients = set()
