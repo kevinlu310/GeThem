@@ -522,9 +522,13 @@ def add_need():
 	if request.form['need_title']:
 		# insert post.
 		ts = time.time()
-		g.db.execute('''insert into need (need_author_id, need_title, need_content, need_pub_date)
-			values (%s, %s, %s, %s)''', session['user_id'], request.form['need_title'], request.form['need_content'],
-			  int(ts))
+		# handle the tags.
+		tag = 'others' # default.
+		if 'tags' in request.form.keys():
+			tag = request.form['tags']
+		g.db.execute('''insert into need (need_author_id, need_title, need_content, need_pub_date, tag)
+			values (%s, %s, %s, %s, %s)''', session['user_id'], request.form['need_title'], request.form['need_content'],
+			  int(ts), tag)
 			  
 		postid = g.db.get('''select * from need where need_author_id=%s and need_pub_date=%s''',
 										session['user_id'], int(ts))['need_id']
@@ -565,9 +569,13 @@ def add_provide():
 		abort(401)
 	if request.form['provide_title']:
 		ts = time.time()
-		g.db.execute('''insert into provide (provide_author_id, provide_title, provide_content, provide_pub_date)
-			values (%s, %s, %s, %s)''', session['user_id'], request.form['provide_title'], request.form['provide_content'],
-			  int(ts))
+		# handle tag.
+		tag = 'others' # default.
+		if 'tags' in request.form.keys():
+			tag = request.form['tags']
+		g.db.execute('''insert into provide (provide_author_id, provide_title, provide_content, provide_pub_date, tag)
+			values (%s, %s, %s, %s, %s)''', session['user_id'], request.form['provide_title'], request.form['provide_content'],
+			  int(ts), tag)
 
 		postid = g.db.get('''select * from provide where provide_author_id=%s and provide_pub_date=%s''',
 										session['user_id'], int(ts))['provide_id']	
