@@ -26,8 +26,7 @@ sharing and supporting online match.
 import logging
 import time
 import csv
-import numpy
-import scipy
+import math
 import gensim
 import config
 import utils
@@ -113,13 +112,31 @@ def lda_train(corpus_struct, dictionary, num_pass=20, num_topics=10, distributed
 
 	return lda_model
 
+def vector_similarity(vector_a, vector_b):
+	'''calculate similarities between two vectors.'''
+	norm_a = 0.0
+	for i in range(len(vector_a)):
+		norm_a += vector_a[i][1]**2
+	norm_b = 0.0
+	for i in range(len(vector_b)):
+		norm_b += vector_b[i][1]**2
+	
+	dict_a = dict(vector_a)
+	dict_b = dict(vector_b)
+	intersect_keys = set(dict_a.keys()) & set(dict_b.keys())
+	norm = 0.0
+	for key in intersect_keys:
+		norm += dict_a[key] * dict_b[key]
+	return norm/math.sqrt(norm_a)/math.sqrt(norm_b)
+
 def lda_match(lda_model, corpus_struct, dictionary, dump_path):
 	'''given both provides and needs, match them together under the same tag.'''
 	# assign lda topic to primary post.
 	primary_topic_assignment = []
+	primary_bow_corpus = corpus_struct['bow_corpus']
 	primary_id = corpus_struct['global_id_keeper']
-	for i in range(len(corpus_struct['global_id_keeper'])):
-		lda_topic = lda_model[corpus_struct['bow_corpus'][i]]
+	for i in range(len(primary_id)):
+		lda_topic = lda_model[primary_bow_corpus[i]]
 		topic = max(lda_topic, key=lambda o: o[1])[0]
 		primary_topic_assignment.append(topic)
 	logger.info('lda_match() finishes the primary topic assignment')
@@ -154,23 +171,29 @@ def lda_match(lda_model, corpus_struct, dictionary, dump_path):
 	for i in range(len(primary_id)):
 		if primary_topic_assignment[i] not in primary_look_aside:
 			primary_look_aside[primary_topic_assignment[i]] = []
-		primary_look_aside[primary_topic_assignment[i]].append(primary_id[i])
+		primary_look_aside[primary_topic_assignment[i]].append((i, primary_id[i]))
 	dual_look_aside = {}
 	for i in range(len(dual_id)):
 		if dual_topic_assignment[i] not in dual_look_aside:
 			dual_look_aside[dual_topic_assignment[i]] = []
-		dual_look_aside[dual_topic_assignment[i]].append(dual_id[i])
+		dual_look_aside[dual_topic_assignment[i]].append((i, dual_id[i]))
 	logger.info('lda_match() creates the look aside tables')	
 	
 	# now match!
 	primary_table = {}
 	for i in range(len(primary_id)):
-		primary_table[primary_id[i]] = dual_look_aside[primary_topic_assignment[i]]
+		primary_table[primary_id[i]] = []
+		for dual_item in dual_look_aside[primary_topic_assignment[i]]:
+			sim = vector_similarity(primary_bow_corpus[i], dual_bow_corpus[dual_item[0]])
+			primary_table[primary_id[i]].append((dual_item[1], sim))
 	logger.info('lda_match() finishes primary match')
 	
 	dual_table = {}
 	for i in range(len(dual_id)):
-		dual_table[dual_id[i]] = primary_look_aside[dual_topic_assignment[i]]
+		dual_table[dual_id[i]] = []
+		for primary_item in primary_look_aside[dual_topic_assignment[i]]:
+			sim = vector_similarity(dual_bow_corpus[i], primary_bow_corpus[primary_item[0]])
+			dual_table[dual_id[i]].append((primary_item[1], sim))
 	logger.info('lda_match() finishes dual match')
 
 	return (primary_table, dual_table)
